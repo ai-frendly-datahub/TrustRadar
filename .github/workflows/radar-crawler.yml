@@ -3,7 +3,7 @@ name: TrustRadar Crawler
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *" # 매일 00:00 UTC
+    - cron: "0 7 * * *" # 매일 07:00 UTC (KST 16:00)
 
 permissions:
   contents: write
