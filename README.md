@@ -1,5 +1,8 @@
 # TrustRadar - 신뢰도 정보 레이더
 
+**🌐 Live Report**: https://ai-frendly-datahub.github.io/TrustRadar/
+
+
 기업 신뢰도, 평판, 소비자 만족도 정보를 수집하고 기업별 신뢰도 트렌드를 분석합니다.
 
 ## 프로젝트 목표
