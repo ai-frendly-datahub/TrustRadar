@@ -3,12 +3,17 @@ from __future__ import annotations
 from collections import Counter
 from collections.abc import Iterable
 from datetime import datetime, timezone
+from itertools import combinations
 from pathlib import Path
-from typing import Protocol, cast
+from typing import Protocol, Union, cast
 
+import networkx as nx
+import plotly.graph_objects as go
 from jinja2 import Template
 
 from .models import Article, CategoryConfig
+
+DEFAULT_NETWORK_NODE_LIMIT = 80
 
 
 class _TemplateRenderer(Protocol):
@@ -28,31 +33,37 @@ def generate_report(
 
     articles_list = list(articles)
     entity_counts = _count_entities(articles_list)
-    
-    # Convert Article objects to dicts for JSON serialization (for JavaScript charts)
-    articles_json = []
+
+    articles_json: list[dict[str, object]] = []
+    entities_json: list[dict[str, list[str]]] = []
     for article in articles_list:
-        article_data = {
-            'title': article.title,
-            'link': article.link,
-            'source': article.source,
-            'published': article.published.isoformat() if article.published else None,
-            'published_at': article.published.isoformat() if article.published else None,
-            'summary': article.summary,
-            'matched_entities': article.matched_entities or {}
+        matched_entities = article.matched_entities or {}
+        article_data: dict[str, object] = {
+            "title": article.title,
+            "link": article.link,
+            "source": article.source,
+            "published": article.published.isoformat() if article.published else None,
+            "published_at": article.published.isoformat() if article.published else None,
+            "summary": article.summary,
+            "matched_entities": matched_entities,
+            "collected_at": article.collected_at.isoformat() if article.collected_at else None,
         }
         articles_json.append(article_data)
+        entities_json.append(matched_entities)
+
+    entity_network_html = build_entity_network_html(entities_json, include_plotlyjs="cdn")
 
     template = cast(_TemplateRenderer, Template(_REPORT_TEMPLATE))
     rendered = template.render(
-            category=category,
-            articles=articles_list,  # Keep original for template rendering
-            articles_json=articles_json,  # JSON-serializable version for charts
-            generated_at=datetime.now(timezone.utc),
-            stats=stats,
-            entity_counts=entity_counts,
-            errors=errors or [],
-        )
+        category=category,
+        articles=articles_list,
+        articles_json=articles_json,
+        entity_network_html=entity_network_html,
+        generated_at=datetime.now(timezone.utc),
+        stats=stats,
+        entity_counts=entity_counts,
+        errors=errors or [],
+    )
     _ = output_path.write_text(rendered, encoding="utf-8")
     return output_path
 
@@ -63,6 +74,160 @@ def _count_entities(articles: Iterable[Article]) -> Counter[str]:
         for entity_name, keywords in (article.matched_entities or {}).items():
             counter[entity_name] += len(keywords)
     return counter
+
+
+def _normalize_entity_name(value: object) -> str:
+    text = str(value).strip()
+    if not text:
+        return ""
+    return " ".join(text.split())
+
+
+def build_entity_cooccurrence_graph(
+    entities_json: list[dict[str, list[str]]],
+    max_nodes: int = DEFAULT_NETWORK_NODE_LIMIT,
+) -> tuple[dict[str, int], dict[tuple[str, str], int]]:
+    frequency: Counter[str] = Counter()
+    normalized_groups: list[list[str]] = []
+
+    for entity_map in entities_json:
+        unique_names: set[str] = set()
+        for raw_name in entity_map.keys():
+            normalized = _normalize_entity_name(raw_name)
+            if normalized:
+                unique_names.add(normalized)
+        names = sorted(unique_names)
+        if not names:
+            continue
+        frequency.update(names)
+        normalized_groups.append(names)
+
+    top_nodes = {
+        name
+        for name, _ in sorted(frequency.items(), key=lambda item: (-item[1], item[0]))[:max_nodes]
+    }
+
+    node_counts: Counter[str] = Counter()
+    edge_counts: Counter[tuple[str, str]] = Counter()
+    for names in normalized_groups:
+        selected = sorted(name for name in names if name in top_nodes)
+        if not selected:
+            continue
+        node_counts.update(selected)
+        if len(selected) < 2:
+            continue
+        for left, right in combinations(selected, 2):
+            edge_counts[(left, right)] += 1
+
+    return dict(node_counts), dict(edge_counts)
+
+
+def build_entity_network_html(
+    entities_json: list[dict[str, list[str]]],
+    include_plotlyjs: Union[str, bool],
+    max_nodes: int = DEFAULT_NETWORK_NODE_LIMIT,
+) -> str:
+    node_counts, edge_counts = build_entity_cooccurrence_graph(entities_json, max_nodes=max_nodes)
+    if not node_counts:
+        return (
+            '<div class="network-empty">'
+            "Not enough co-occurrence data to build an entity network."
+            "</div>"
+        )
+
+    graph = nx.Graph()
+    for node, count in node_counts.items():
+        graph.add_node(node, frequency=count)
+
+    for (left, right), weight in edge_counts.items():
+        if left in node_counts and right in node_counts and left != right:
+            graph.add_edge(left, right, weight=weight)
+
+    if graph.number_of_nodes() == 1:
+        raw_positions = nx.circular_layout(graph)
+    else:
+        raw_positions = nx.spring_layout(graph, seed=42, weight="weight")
+
+    positions: dict[str, tuple[float, float]] = {
+        node: (float(raw_positions[node][0]), float(raw_positions[node][1])) for node in node_counts
+    }
+
+    edge_x: list[float] = []
+    edge_y: list[float] = []
+    node_degree: Counter[str] = Counter()
+    for left, right in graph.edges():
+        left_pos = positions[left]
+        right_pos = positions[right]
+        edge_x.extend([left_pos[0], right_pos[0], float("nan")])
+        edge_y.extend([left_pos[1], right_pos[1], float("nan")])
+        node_degree[left] += 1
+        node_degree[right] += 1
+
+    edge_trace = go.Scatter(
+        x=edge_x,
+        y=edge_y,
+        mode="lines",
+        hoverinfo="skip",
+        line={"width": 1.0, "color": "rgba(150,190,255,0.28)"},
+    )
+
+    max_frequency = max(node_counts.values())
+    node_x: list[float] = []
+    node_y: list[float] = []
+    marker_sizes: list[float] = []
+    marker_colors: list[int] = []
+    labels: list[str] = []
+    hover_text: list[str] = []
+
+    ordered_nodes = sorted(node_counts.keys(), key=lambda name: (-node_counts[name], name.lower()))
+    for node in ordered_nodes:
+        frequency = node_counts[node]
+        degree = node_degree[node]
+        node_x.append(positions[node][0])
+        node_y.append(positions[node][1])
+        marker_sizes.append(12.0 + (frequency / max_frequency) * 24.0)
+        marker_colors.append(degree)
+        labels.append(node if len(node) <= 24 else f"{node[:21]}...")
+        hover_text.append(f"{node}<br>Frequency: {frequency}<br>Connections: {degree}")
+
+    node_trace = go.Scatter(
+        x=node_x,
+        y=node_y,
+        mode="markers+text",
+        text=labels,
+        textposition="top center",
+        hoverinfo="text",
+        hovertext=hover_text,
+        marker={
+            "size": marker_sizes,
+            "color": marker_colors,
+            "colorscale": [[0.0, "#19a7c3"], [0.5, "#33d6c5"], [1.0, "#f6c84c"]],
+            "showscale": False,
+            "line": {"width": 1.0, "color": "rgba(5,7,12,0.88)"},
+            "opacity": 0.93,
+        },
+        textfont={"size": 10, "color": "rgba(233,238,251,0.88)"},
+    )
+
+    fig = go.Figure(data=[edge_trace, node_trace])
+    fig.update_layout(
+        showlegend=False,
+        margin={"l": 8, "r": 8, "t": 8, "b": 8},
+        hovermode="closest",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        xaxis={"showgrid": False, "showticklabels": False, "zeroline": False},
+        yaxis={"showgrid": False, "showticklabels": False, "zeroline": False},
+    )
+
+    return cast(
+        str,
+        fig.to_html(
+            full_html=False,
+            include_plotlyjs=include_plotlyjs,
+            config={"displayModeBar": False, "responsive": True},
+        ),
+    )
 
 
 _REPORT_TEMPLATE = """<!doctype html>
@@ -320,6 +485,7 @@ _REPORT_TEMPLATE = """<!doctype html>
         box-shadow: 0 16px 55px rgba(0,0,0,.38);
         overflow:hidden;
       }
+      .panel.full{grid-column: 1 / -1}
       .panel-hd{
         padding:14px 16px;
         display:flex;
@@ -345,6 +511,29 @@ _REPORT_TEMPLATE = """<!doctype html>
       .panel-bd{padding:14px 16px 16px}
       .chart-wrap{position:relative; height: 290px}
       .chart-wrap.tall{height: 320px}
+      .network-wrap{
+        position:relative;
+        min-height: 380px;
+        border-radius: 14px;
+        border: 1px solid rgba(150,190,255,.14);
+        background: rgba(5,7,12,.36);
+        overflow:hidden;
+      }
+      .network-wrap .plotly-graph-div{width:100%; min-height: 380px}
+      .network-empty{
+        min-height: 180px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        padding: 14px;
+        color: rgba(233,238,251,.68);
+        font-size: 13px;
+        line-height: 1.55;
+        border: 1px dashed rgba(150,190,255,.22);
+        border-radius: 14px;
+        background: rgba(10,16,30,.35);
+      }
       canvas{max-width:100%}
 
       .notice{
@@ -533,6 +722,8 @@ _REPORT_TEMPLATE = """<!doctype html>
         .btn{width:100%}
         .chart-wrap{height: 260px}
         .chart-wrap.tall{height: 300px}
+        .network-wrap{min-height: 300px}
+        .network-wrap .plotly-graph-div{min-height: 300px}
       }
       @media (prefers-reduced-motion: reduce){
         *{scroll-behavior:auto !important}
@@ -640,6 +831,7 @@ _REPORT_TEMPLATE = """<!doctype html>
           <h2>Visuals</h2>
           <div class="right">
             <span class="kbd">Chart.js</span>
+            <span class="kbd">Plotly</span>
             <span class="kbd">dark editorial</span>
             <span class="kbd">responsive</span>
           </div>
@@ -684,6 +876,26 @@ _REPORT_TEMPLATE = """<!doctype html>
         </div>
 
         <div class="grid" style="margin-top:14px">
+          <article class="panel full" aria-label="Entity co-occurrence network">
+            <header class="panel-hd">
+              <div>
+                <p class="panel-title">Entity Co-occurrence Network</p>
+                <p class="panel-sub">Top 80 entities linked when they appear in the same article</p>
+              </div>
+              <div class="pill" aria-hidden="true">network</div>
+            </header>
+            <div class="panel-bd">
+              <div class="network-wrap" role="img" aria-label="Entity co-occurrence network graph">
+                {{ entity_network_html|safe }}
+              </div>
+              <noscript>
+                <p class="muted small">Network graph requires JavaScript. Enable JS to see entity connections.</p>
+              </noscript>
+            </div>
+          </article>
+        </div>
+
+        <div class="grid" style="margin-top:14px">
           <article class="panel" aria-label="Source distribution">
             <header class="panel-hd">
               <div>
@@ -698,6 +910,60 @@ _REPORT_TEMPLATE = """<!doctype html>
               </div>
               <noscript>
                 <p class="muted small">Charts require JavaScript. Enable JS to see source breakdown.</p>
+              </noscript>
+            </div>
+          </article>
+
+          <article class="panel" aria-label="Data Freshness">
+            <header class="panel-hd">
+              <div>
+                <p class="panel-title">Data Freshness</p>
+                <p class="panel-sub">Collection lag in hours</p>
+              </div>
+              <div class="pill" aria-hidden="true">bar</div>
+            </header>
+            <div class="panel-bd">
+              <div class="chart-wrap" role="img" aria-label="Bar chart showing data freshness">
+                <canvas id="chartFreshness"></canvas>
+              </div>
+              <noscript>
+                <p class="muted small">Charts require JavaScript. Enable JS to see freshness data.</p>
+              </noscript>
+            </div>
+          </article>
+
+          <article class="panel" aria-label="Entity Extraction Rate">
+            <header class="panel-hd">
+              <div>
+                <p class="panel-title">Entity Extraction Rate</p>
+                <p class="panel-sub">Percentage of articles with entities</p>
+              </div>
+              <div class="pill" aria-hidden="true">doughnut</div>
+            </header>
+            <div class="panel-bd">
+              <div class="chart-wrap" role="img" aria-label="Doughnut chart showing entity extraction rate">
+                <canvas id="chartEntityRate"></canvas>
+              </div>
+              <noscript>
+                <p class="muted small">Charts require JavaScript. Enable JS to see entity rate.</p>
+              </noscript>
+            </div>
+          </article>
+
+          <article class="panel" aria-label="Source Health">
+            <header class="panel-hd">
+              <div>
+                <p class="panel-title">Source Health</p>
+                <p class="panel-sub">Articles per source (sorted)</p>
+              </div>
+              <div class="pill" aria-hidden="true">bar</div>
+            </header>
+            <div class="panel-bd">
+              <div class="chart-wrap" role="img" aria-label="Horizontal bar chart showing source health">
+                <canvas id="chartSourceHealth"></canvas>
+              </div>
+              <noscript>
+                <p class="muted small">Charts require JavaScript. Enable JS to see source health.</p>
               </noscript>
             </div>
           </article>
@@ -881,7 +1147,7 @@ _REPORT_TEMPLATE = """<!doctype html>
             const direct = new Date(s);
             if (!isNaN(direct.getTime())) return direct;
 
-            const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            const m = s.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
             if (m) {
               const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
               if (!isNaN(d.getTime())) return d;
@@ -1098,6 +1364,181 @@ _REPORT_TEMPLATE = """<!doctype html>
               }
             });
           }
+
+          // Chart 1: Data Freshness (collection lag in hours)
+          function buildFreshness(items) {
+            const lagBuckets = { "0-1h": 0, "1-6h": 0, "6-24h": 0, "1-3d": 0, "3-7d": 0, "7d+": 0 };
+            for (const a of items) {
+              const pubStr = a && (a.published_at || a.published);
+              const collStr = a && a.collected_at;
+              if (!pubStr || !collStr) continue;
+              const pubDate = new Date(String(pubStr));
+              const collDate = new Date(String(collStr));
+              if (isNaN(pubDate.getTime()) || isNaN(collDate.getTime())) continue;
+              const lagMs = collDate.getTime() - pubDate.getTime();
+              const lagHours = lagMs / (1000 * 60 * 60);
+              if (lagHours < 1) lagBuckets["0-1h"]++;
+              else if (lagHours < 6) lagBuckets["1-6h"]++;
+              else if (lagHours < 24) lagBuckets["6-24h"]++;
+              else if (lagHours < 72) lagBuckets["1-3d"]++;
+              else if (lagHours < 168) lagBuckets["3-7d"]++;
+              else lagBuckets["7d+"]++;
+            }
+            return { labels: Object.keys(lagBuckets), values: Object.values(lagBuckets) };
+          }
+
+          const freshnessData = buildFreshness(articles);
+          const freshnessCanvas = document.getElementById("chartFreshness");
+          if (freshnessCanvas && freshnessData.labels.length) {
+            new Chart(freshnessCanvas.getContext("2d"), {
+              type: "bar",
+              data: {
+                labels: freshnessData.labels,
+                datasets: [{
+                  label: "articles",
+                  data: freshnessData.values,
+                  backgroundColor: "rgba(120,162,255,.35)",
+                  borderColor: "rgba(120,162,255,.72)",
+                  borderWidth: 1.2,
+                  borderRadius: 10,
+                  maxBarThickness: 44
+                }]
+              },
+              options: {
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    backgroundColor: "rgba(10,16,30,.92)",
+                    borderColor: "rgba(150,190,255,.20)",
+                    borderWidth: 1
+                  }
+                },
+                scales: {
+                  x: {
+                    grid: { display: false },
+                    ticks: { color: "rgba(233,238,251,.68)" }
+                  },
+                  y: {
+                    beginAtZero: true,
+                    grid: { color: "rgba(150,190,255,.10)" },
+                    ticks: { color: "rgba(233,238,251,.64)" }
+                  }
+                }
+              }
+            });
+          }
+
+          // Chart 2: Entity Extraction Rate (doughnut with center text)
+          function buildEntityRate(items) {
+            let withEntities = 0, withoutEntities = 0;
+            for (const a of items) {
+              const ents = a && a.matched_entities;
+              if (ents && Object.keys(ents).length > 0) withEntities++;
+              else withoutEntities++;
+            }
+            return { with: withEntities, without: withoutEntities };
+          }
+
+          const entityRateData = buildEntityRate(articles);
+          const entityRateCanvas = document.getElementById("chartEntityRate");
+          if (entityRateCanvas) {
+            const total = entityRateData.with + entityRateData.without;
+            const pct = total > 0 ? Math.round((entityRateData.with / total) * 100) : 0;
+            const plugin = {
+              id: "textCenter",
+              beforeDatasetsDraw(c) {
+                const { width, height } = c.chartArea;
+                const x = c.chartArea.left + width / 2;
+                const y = c.chartArea.top + height / 2;
+                c.ctx.save();
+                c.ctx.font = "bold 24px sans-serif";
+                c.ctx.fillStyle = "rgba(233,238,251,.8)";
+                c.ctx.textAlign = "center";
+                c.ctx.textBaseline = "middle";
+                c.ctx.fillText(pct + "%", x, y);
+                c.ctx.restore();
+              }
+            };
+            new Chart(entityRateCanvas.getContext("2d"), {
+              type: "doughnut",
+              data: {
+                labels: ["With entities", "Without entities"],
+                datasets: [{
+                  data: [entityRateData.with, entityRateData.without],
+                  backgroundColor: ["rgba(95,222,132,.35)", "rgba(255,91,110,.35)"],
+                  borderColor: ["rgba(95,222,132,.80)", "rgba(255,91,110,.80)"],
+                  borderWidth: 1.2
+                }]
+              },
+              options: {
+                cutout: "62%",
+                plugins: {
+                  legend: { position: "bottom", labels: { color: "rgba(233,238,251,.72)", padding: 14 } },
+                  tooltip: {
+                    backgroundColor: "rgba(10,16,30,.92)",
+                    borderColor: "rgba(150,190,255,.20)",
+                    borderWidth: 1
+                  }
+                }
+              },
+              plugins: [plugin]
+            });
+          }
+
+          // Chart 3: Source Health (horizontal bar, sorted descending)
+          function buildSourceHealth(items) {
+            const map = new Map();
+            for (const a of items) {
+              const s = (a && a.source) ? String(a.source) : "unknown";
+              const key = s.trim() || "unknown";
+              map.set(key, (map.get(key) || 0) + 1);
+            }
+            const pairs = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+            return { labels: pairs.map(p => p[0]), values: pairs.map(p => p[1]) };
+          }
+
+          const sourceHealthData = buildSourceHealth(articles);
+          const sourceHealthCanvas = document.getElementById("chartSourceHealth");
+          if (sourceHealthCanvas && sourceHealthData.labels.length) {
+            const colors = palette(sourceHealthData.labels.length);
+            new Chart(sourceHealthCanvas.getContext("2d"), {
+              type: "bar",
+              data: {
+                labels: sourceHealthData.labels,
+                datasets: [{
+                  label: "articles",
+                  data: sourceHealthData.values,
+                  backgroundColor: colors.map(c => c.replace(")", ", .35)").replace("rgba", "rgba")),
+                  borderColor: colors.map(c => c.replace(")", ", .80)").replace("rgba", "rgba")),
+                  borderWidth: 1.2,
+                  borderRadius: 10,
+                  maxBarThickness: 44
+                }]
+              },
+              options: {
+                indexAxis: "y",
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    backgroundColor: "rgba(10,16,30,.92)",
+                    borderColor: "rgba(150,190,255,.20)",
+                    borderWidth: 1
+                  }
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    grid: { color: "rgba(150,190,255,.10)" },
+                    ticks: { color: "rgba(233,238,251,.64)" }
+                  },
+                  y: {
+                    grid: { display: false },
+                    ticks: { color: "rgba(233,238,251,.68)" }
+                  }
+                }
+              }
+            });
+          }
         })();
       </script>
     </main>
@@ -1109,24 +1550,24 @@ _REPORT_TEMPLATE = """<!doctype html>
 def generate_index_html(report_dir: Path) -> Path:
     """Generate an index.html that lists all available report files."""
     report_dir.mkdir(parents=True, exist_ok=True)
-    
+
     html_files = sorted(
         [f for f in report_dir.glob("*.html") if f.name != "index.html"],
         key=lambda p: p.name,
     )
-    
-    reports = []
+
+    reports: list[dict[str, str]] = []
     for html_file in html_files:
         name = html_file.stem
         display_name = name.replace("_report", "").replace("_", " ").title()
         reports.append({"filename": html_file.name, "display_name": display_name})
-    
+
     template = cast(_TemplateRenderer, Template(_INDEX_TEMPLATE))
     rendered = template.render(
         reports=reports,
         generated_at=datetime.now(timezone.utc),
     )
-    
+
     index_path = report_dir / "index.html"
     _ = index_path.write_text(rendered, encoding="utf-8")
     return index_path
