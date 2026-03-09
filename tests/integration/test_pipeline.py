@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from importlib import import_module
 from pathlib import Path
-from typing import Protocol, cast
+from typing import Optional, Protocol, cast
 from unittest.mock import patch
 
 import yaml
@@ -13,8 +13,8 @@ class _RunPipeline(Protocol):
         self,
         *,
         category: str,
-        config_path: Path | None = None,
-        categories_dir: Path | None = None,
+        config_path: Optional[Path] = None,
+        categories_dir: Optional[Path] = None,
         per_source_limit: int = 30,
         recent_days: int = 7,
         timeout: int = 15,
