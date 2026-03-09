@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from trustradar.models import Article, EntityDefinition
+from trustradar.models import Article, CategoryConfig, EntityDefinition
 from trustradar.reporter import generate_report
 
 
@@ -40,7 +40,7 @@ def test_report_generation(
     tmp_path: Path,
     sample_articles: list[Article],
     sample_entities: list[EntityDefinition],
-    sample_config,
+    sample_config: CategoryConfig,
 ) -> None:
     """Test report generation: generate HTML → verify file exists + contains expected content."""
     analyzed = _apply_entity_rules_py39(sample_articles, sample_entities)
@@ -57,4 +57,7 @@ def test_report_generation(
 
     assert result.exists()
     assert result.suffix == ".html"
-    assert len(result.read_text(encoding="utf-8")) > 0
+    html = result.read_text(encoding="utf-8")
+    assert len(html) > 0
+    assert "Entity Co-occurrence Network" in html
+    assert "network-wrap" in html
