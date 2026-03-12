@@ -34,6 +34,7 @@ dependencies = [
     "pydantic>=2.5.0",
     "duckdb>=0.9.0",
     "networkx>=3.0",
+    "numpy>=1.24.0",
     "plotly>=5.14.0",
     "tenacity>=8.2.0",
     "structlog>=24.2.0",
