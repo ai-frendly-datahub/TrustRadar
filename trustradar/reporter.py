@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-import re
 import shutil
 from collections import Counter
 from collections.abc import Iterable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from itertools import combinations
 from pathlib import Path
-from typing import Protocol, Union, cast
+from typing import cast
 
 import networkx as nx
 import plotly.graph_objects as go
 from jinja2 import Environment, FileSystemLoader
 
 from .models import Article, CategoryConfig
+
 
 DEFAULT_NETWORK_NODE_LIMIT = 80
 
@@ -76,14 +76,14 @@ def generate_report(
         articles=articles_list,
         articles_json=articles_json,
         entity_network_html=entity_network_html,
-        generated_at=datetime.now(timezone.utc),
+        generated_at=datetime.now(UTC),
         stats=stats,
         entity_counts=entity_counts,
         errors=errors or [],
     )
     _ = output_path.write_text(rendered, encoding="utf-8")
 
-    now_ts = datetime.now(timezone.utc)
+    now_ts = datetime.now(UTC)
     date_stamp = now_ts.strftime("%Y%m%d")
     dated_name = f"{category.category_name}_{date_stamp}.html"
     dated_path = output_path.parent / dated_name
@@ -150,7 +150,7 @@ def build_entity_cooccurrence_graph(
 
 def build_entity_network_html(
     entities_json: list[dict[str, list[str]]],
-    include_plotlyjs: Union[str, bool],
+    include_plotlyjs: str | bool,
     max_nodes: int = DEFAULT_NETWORK_NODE_LIMIT,
 ) -> str:
     node_counts, edge_counts = build_entity_cooccurrence_graph(entities_json, max_nodes=max_nodes)
@@ -274,7 +274,7 @@ def generate_index_html(report_dir: Path) -> Path:
     template = _get_jinja_env().get_template("index.html")
     rendered = template.render(
         reports=reports,
-        generated_at=datetime.now(timezone.utc),
+        generated_at=datetime.now(UTC),
     )
 
     index_path = report_dir / "index.html"
