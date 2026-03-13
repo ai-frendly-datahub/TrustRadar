@@ -33,7 +33,7 @@ class _SearchIndexCtor(Protocol):
     def __call__(self, db_path: Path) -> _SearchIndex: ...
 
 
-SearchIndex = cast(_SearchIndexCtor, import_module("trustradar.search_index").SearchIndex)
+SearchIndex = cast(_SearchIndexCtor, import_module("radar.search_index").SearchIndex)
 
 
 def test_index_creation_creates_tables_fts_and_triggers(tmp_path: Path) -> None:
@@ -189,7 +189,7 @@ def test_load_settings_reads_custom_search_db_path(tmp_path: Path) -> None:
     _ = config_path.write_text(
         yaml.safe_dump(
             {
-                "database_path": "data/trustradar_data.duckdb",
+                "database_path": "data/radar_data.duckdb",
                 "report_dir": "reports",
                 "raw_data_dir": "data/raw",
                 "search_db_path": str(custom_path),

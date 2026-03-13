@@ -2,52 +2,11 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime, timedelta
-from importlib import import_module
 from pathlib import Path
-from typing import Protocol, cast
 
 import duckdb
 
-
-class _SearchIndex(Protocol):
-    def upsert(self, link: str, title: str, body: str) -> None: ...
-
-    def __enter__(self) -> _SearchIndex: ...
-
-    def __exit__(self, exc_type: object, exc_value: object, traceback: object) -> None: ...
-
-
-class _SearchIndexCtor(Protocol):
-    def __call__(self, db_path: Path) -> _SearchIndex: ...
-
-
-SearchIndex = cast(_SearchIndexCtor, import_module("trustradar.search_index").SearchIndex)
-
-
-class _HandleSearch(Protocol):
-    def __call__(
-        self, *, search_db_path: Path, db_path: Path, query: str, limit: int = 20
-    ) -> str: ...
-
-
-class _HandleRecentUpdates(Protocol):
-    def __call__(self, *, db_path: Path, days: int = 7, limit: int = 20) -> str: ...
-
-
-class _HandleSql(Protocol):
-    def __call__(self, *, db_path: Path, query: str) -> str: ...
-
-
-class _HandleTopTrends(Protocol):
-    def __call__(self, *, db_path: Path, days: int = 7, limit: int = 10) -> str: ...
-
-
-class _HandleTrustScore(Protocol):
-    def __call__(self, *, db_path: Path, days: int = 30, limit: int = 10) -> str: ...
-
-
-def _load_tools() -> object:
-    return import_module("trustradar.mcp_server.tools")
+from trustradar.search_index import SearchIndex
 
 
 def _init_articles_table(db_path: Path) -> None:
@@ -90,7 +49,7 @@ def _seed_article(
             """,
             [
                 article_id,
-                "trust",
+                "coffee",
                 "Test Source",
                 title,
                 link,
@@ -105,54 +64,52 @@ def _seed_article(
 
 
 def test_handle_search(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_search = cast(_HandleSearch, tools.handle_search)
+    from mcp_server.tools import handle_search
 
-    db_path = tmp_path / "trustradar.duckdb"
+    db_path = tmp_path / "radar.duckdb"
     search_db_path = tmp_path / "search.db"
     _init_articles_table(db_path)
 
-    now = datetime.now(tz=UTC)
+    now = datetime.now(UTC)
     recent_link = "https://example.com/recent"
     old_link = "https://example.com/old"
 
     _seed_article(
         db_path=db_path,
         article_id=1,
-        title="Recent trustpilot review trend",
+        title="Recent coffee demand",
         link=recent_link,
         collected_at=now - timedelta(days=2),
     )
     _seed_article(
         db_path=db_path,
         article_id=2,
-        title="Old fake review issue",
+        title="Old coffee demand",
         link=old_link,
         collected_at=now - timedelta(days=20),
     )
 
     with SearchIndex(search_db_path) as idx:
-        idx.upsert(recent_link, "Recent trustpilot review trend", "Trustpilot rating improved")
-        idx.upsert(old_link, "Old fake review issue", "Review fraud concern")
+        idx.upsert(recent_link, "Recent coffee demand", "Demand is rising")
+        idx.upsert(old_link, "Old coffee demand", "Demand was low")
 
     output = handle_search(
         search_db_path=search_db_path,
         db_path=db_path,
-        query="last 7 days trustpilot",
+        query="last 7 days coffee",
         limit=10,
     )
 
-    assert "Recent trustpilot review trend" in output
-    assert "Old fake review issue" not in output
+    assert "Recent coffee demand" in output
+    assert "Old coffee demand" not in output
 
 
 def test_handle_recent_updates(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_recent_updates = cast(_HandleRecentUpdates, tools.handle_recent_updates)
+    from mcp_server.tools import handle_recent_updates
 
-    db_path = tmp_path / "trustradar.duckdb"
+    db_path = tmp_path / "radar.duckdb"
     _init_articles_table(db_path)
-    now = datetime.now(tz=UTC)
+    now = datetime.now(UTC)
 
     _seed_article(
         db_path=db_path,
@@ -176,10 +133,9 @@ def test_handle_recent_updates(tmp_path: Path) -> None:
 
 
 def test_handle_sql_select(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_sql = cast(_HandleSql, tools.handle_sql)
+    from mcp_server.tools import handle_sql
 
-    db_path = tmp_path / "trustradar.duckdb"
+    db_path = tmp_path / "radar.duckdb"
     _init_articles_table(db_path)
 
     output = handle_sql(db_path=db_path, query="SELECT COUNT(*) AS total FROM articles")
@@ -189,10 +145,9 @@ def test_handle_sql_select(tmp_path: Path) -> None:
 
 
 def test_handle_sql_blocked(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_sql = cast(_HandleSql, tools.handle_sql)
+    from mcp_server.tools import handle_sql
 
-    db_path = tmp_path / "trustradar.duckdb"
+    db_path = tmp_path / "radar.duckdb"
     _init_articles_table(db_path)
 
     output = handle_sql(db_path=db_path, query="DROP TABLE articles")
@@ -201,12 +156,11 @@ def test_handle_sql_blocked(tmp_path: Path) -> None:
 
 
 def test_handle_top_trends(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_top_trends = cast(_HandleTopTrends, tools.handle_top_trends)
+    from mcp_server.tools import handle_top_trends
 
-    db_path = tmp_path / "trustradar.duckdb"
+    db_path = tmp_path / "radar.duckdb"
     _init_articles_table(db_path)
-    now = datetime.now(tz=UTC)
+    now = datetime.now(UTC)
 
     _seed_article(
         db_path=db_path,
@@ -214,7 +168,7 @@ def test_handle_top_trends(tmp_path: Path) -> None:
         title="a",
         link="https://example.com/a",
         collected_at=now - timedelta(days=1),
-        entities={"ReviewQuality": ["fake review", "fraud"], "Platform": ["trustpilot"]},
+        entities={"Region": ["ethiopia", "kenya"], "Roaster": ["blue bottle"]},
     )
     _seed_article(
         db_path=db_path,
@@ -222,59 +176,20 @@ def test_handle_top_trends(tmp_path: Path) -> None:
         title="b",
         link="https://example.com/b",
         collected_at=now - timedelta(days=1),
-        entities={"Reputation": ["reputation"]},
+        entities={"Region": ["brazil"]},
     )
 
     output = handle_top_trends(db_path=db_path, days=7, limit=10)
 
-    assert "ReviewQuality" in output
-    assert "2" in output
-    assert "Platform" in output
+    assert "Region" in output
+    assert "3" in output
+    assert "Roaster" in output
     assert "1" in output
 
 
-def test_handle_trust_score(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_trust_score = cast(_HandleTrustScore, tools.handle_trust_score)
+def test_handle_price_watch_stub() -> None:
+    from mcp_server.tools import handle_price_watch
 
-    db_path = tmp_path / "trustradar.duckdb"
-    _init_articles_table(db_path)
-    now = datetime.now(tz=UTC)
+    output = handle_price_watch(threshold=10.0)
 
-    _seed_article(
-        db_path=db_path,
-        article_id=1,
-        title="Positive trust signals",
-        link="https://example.com/positive",
-        collected_at=now - timedelta(days=1),
-        entities={"Rating": ["rating", "평점"], "Platform": ["trustpilot"]},
-    )
-    _seed_article(
-        db_path=db_path,
-        article_id=2,
-        title="Negative trust signals",
-        link="https://example.com/negative",
-        collected_at=now - timedelta(days=1),
-        entities={"Complaint": ["complaint", "bad review"], "ReviewQuality": ["fake review"]},
-    )
-
-    output = handle_trust_score(db_path=db_path, days=7, limit=10)
-
-    assert "Trust score analysis (last 7 days):" in output
-    assert "Overall trust score:" in output
-    assert "positive: 3" in output
-    assert "negative: 3" in output
-    assert "Rating: 2" in output
-    assert "Complaint: 2" in output
-
-
-def test_handle_trust_score_no_data(tmp_path: Path) -> None:
-    tools = _load_tools()
-    handle_trust_score = cast(_HandleTrustScore, tools.handle_trust_score)
-
-    db_path = tmp_path / "trustradar.duckdb"
-    _init_articles_table(db_path)
-
-    output = handle_trust_score(db_path=db_path, days=7, limit=5)
-
-    assert output == "No trust score data available."
+    assert "Not available in template project" in output
