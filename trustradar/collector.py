@@ -86,16 +86,16 @@ def _fetch_url_with_retry(
     session: requests.Session | None = None,
 ) -> requests.Response:
     """Fetch URL with retry logic on transient errors.
-    
+
     Args:
         url: URL to fetch
         timeout: Request timeout in seconds
         headers: Optional custom headers
         session: Optional requests Session to use
-        
+
     Returns:
         requests.Response object
-        
+
     Raises:
         requests.Timeout: When all retries timeout
         requests.ConnectionError: When all retries fail to connect
