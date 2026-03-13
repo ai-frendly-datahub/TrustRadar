@@ -1,15 +1,11 @@
 from __future__ import annotations
 
 import json
-import logging
 import os
-from io import StringIO
-from pathlib import Path
 
 import pytest
-import structlog
 
-from trustradar.logger import get_logger, configure_logging
+from trustradar.logger import configure_logging, get_logger
 
 
 class TestLoggerConfiguration:

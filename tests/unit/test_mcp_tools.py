@@ -12,7 +12,7 @@ import duckdb
 class _SearchIndex(Protocol):
     def upsert(self, link: str, title: str, body: str) -> None: ...
 
-    def __enter__(self) -> "_SearchIndex": ...
+    def __enter__(self) -> _SearchIndex: ...
 
     def __exit__(self, exc_type: object, exc_value: object, traceback: object) -> None: ...
 
@@ -25,7 +25,9 @@ SearchIndex = cast(_SearchIndexCtor, import_module("trustradar.search_index").Se
 
 
 class _HandleSearch(Protocol):
-    def __call__(self, *, search_db_path: Path, db_path: Path, query: str, limit: int = 20) -> str: ...
+    def __call__(
+        self, *, search_db_path: Path, db_path: Path, query: str, limit: int = 20
+    ) -> str: ...
 
 
 class _HandleRecentUpdates(Protocol):
@@ -104,7 +106,7 @@ def _seed_article(
 
 def test_handle_search(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_search = cast(_HandleSearch, getattr(tools, "handle_search"))
+    handle_search = cast(_HandleSearch, tools.handle_search)
 
     db_path = tmp_path / "trustradar.duckdb"
     search_db_path = tmp_path / "search.db"
@@ -146,7 +148,7 @@ def test_handle_search(tmp_path: Path) -> None:
 
 def test_handle_recent_updates(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_recent_updates = cast(_HandleRecentUpdates, getattr(tools, "handle_recent_updates"))
+    handle_recent_updates = cast(_HandleRecentUpdates, tools.handle_recent_updates)
 
     db_path = tmp_path / "trustradar.duckdb"
     _init_articles_table(db_path)
@@ -175,7 +177,7 @@ def test_handle_recent_updates(tmp_path: Path) -> None:
 
 def test_handle_sql_select(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_sql = cast(_HandleSql, getattr(tools, "handle_sql"))
+    handle_sql = cast(_HandleSql, tools.handle_sql)
 
     db_path = tmp_path / "trustradar.duckdb"
     _init_articles_table(db_path)
@@ -188,7 +190,7 @@ def test_handle_sql_select(tmp_path: Path) -> None:
 
 def test_handle_sql_blocked(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_sql = cast(_HandleSql, getattr(tools, "handle_sql"))
+    handle_sql = cast(_HandleSql, tools.handle_sql)
 
     db_path = tmp_path / "trustradar.duckdb"
     _init_articles_table(db_path)
@@ -200,7 +202,7 @@ def test_handle_sql_blocked(tmp_path: Path) -> None:
 
 def test_handle_top_trends(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_top_trends = cast(_HandleTopTrends, getattr(tools, "handle_top_trends"))
+    handle_top_trends = cast(_HandleTopTrends, tools.handle_top_trends)
 
     db_path = tmp_path / "trustradar.duckdb"
     _init_articles_table(db_path)
@@ -233,7 +235,7 @@ def test_handle_top_trends(tmp_path: Path) -> None:
 
 def test_handle_trust_score(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_trust_score = cast(_HandleTrustScore, getattr(tools, "handle_trust_score"))
+    handle_trust_score = cast(_HandleTrustScore, tools.handle_trust_score)
 
     db_path = tmp_path / "trustradar.duckdb"
     _init_articles_table(db_path)
@@ -268,7 +270,7 @@ def test_handle_trust_score(tmp_path: Path) -> None:
 
 def test_handle_trust_score_no_data(tmp_path: Path) -> None:
     tools = _load_tools()
-    handle_trust_score = cast(_HandleTrustScore, getattr(tools, "handle_trust_score"))
+    handle_trust_score = cast(_HandleTrustScore, tools.handle_trust_score)
 
     db_path = tmp_path / "trustradar.duckdb"
     _init_articles_table(db_path)
