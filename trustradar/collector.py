@@ -13,6 +13,8 @@ from urllib.parse import urlparse
 
 import feedparser
 import requests
+import structlog
+from bs4 import BeautifulSoup
 from pybreaker import CircuitBreakerError
 from radar_core import AdaptiveThrottler, CrawlHealthStore
 from requests.adapters import HTTPAdapter
@@ -22,6 +24,8 @@ from .exceptions import NetworkError, ParseError, SourceError
 from .models import Article, Source
 from .resilience import get_circuit_breaker_manager
 
+
+logger = structlog.get_logger(__name__)
 
 _DEFAULT_HEADERS: dict[str, str] = {
     "User-Agent": "Mozilla/5.0 (compatible; RadarTemplateBot/1.0; +https://github.com/zzragida/ai-frendly-datahub)",
@@ -275,9 +279,23 @@ def _collect_single(
 
     try:
         feed = feedparser.parse(response.content)
-        items: list[Article] = []
+    except Exception as exc:
+        raise ParseError(f"Failed to parse feed from {source.name}: {exc}") from exc
 
-        for entry in feed.entries[:limit]:
+    if not feed.entries:
+        logger.warning("feed_empty", source=source.name, url=source.url)
+        return []
+
+    items: list[Article] = []
+    entry_errors: int = 0
+
+    for idx, entry in enumerate(feed.entries[:limit]):
+        try:
+            # Validate feed entry has expected elements
+            if not _validate_feed_entry(entry, source.name):
+                entry_errors += 1
+                continue
+
             published = _extract_datetime(entry)
             summary = _entry_text(entry, "summary") or _entry_text(entry, "description")
             if not summary:
@@ -292,24 +310,44 @@ def _collect_single(
             title = html.unescape(_entry_text(entry, "title").strip()) or "(no title)"
             link = _entry_text(entry, "link").strip()
 
-            # Validate required fields
-            if not link:
+            # Schema validation for scraped data
+            if not _validate_article_data(title, link, source.name):
+                entry_errors += 1
                 continue
+
+            # Strip HTML from summary using explicit parser
+            article_summary = _strip_html(summary) if summary else ""
 
             items.append(
                 Article(
                     title=title,
                     link=link,
-                    summary=html.unescape(summary.strip()),
+                    summary=article_summary,
                     published=published,
                     source=source.name,
                     category=category,
                 )
             )
+        except Exception as exc:
+            entry_errors += 1
+            logger.warning(
+                "feed_entry_parse_error",
+                source=source.name,
+                entry_index=idx,
+                error=f"{type(exc).__name__}: {exc}",
+            )
+            continue
 
-        return items
-    except Exception as exc:
-        raise ParseError(f"Failed to parse feed from {source.name}: {exc}") from exc
+    if entry_errors > 0:
+        logger.info(
+            "feed_entry_errors_summary",
+            source=source.name,
+            total_entries=min(limit, len(feed.entries)),
+            failed=entry_errors,
+            collected=len(items),
+        )
+
+    return items
 
 
 def _extract_datetime(entry: Mapping[str, Any]) -> datetime | None:
@@ -333,6 +371,55 @@ def _extract_datetime(entry: Mapping[str, Any]) -> datetime | None:
             except Exception:
                 continue
     return None
+
+
+def _strip_html(raw: str) -> str:
+    """Strip HTML tags using BeautifulSoup with explicit html.parser."""
+    if not raw:
+        return ""
+    soup = BeautifulSoup(raw, "html.parser")
+    return soup.get_text(separator=" ", strip=True)
+
+
+def _validate_article_data(title: str, link: str, source_name: str) -> bool:
+    """Validate scraped article data meets minimum schema requirements."""
+    if not title or not title.strip():
+        logger.warning(
+            "article_validation_failed", source=source_name, field="title", reason="empty"
+        )
+        return False
+    if not link or not link.strip():
+        logger.warning(
+            "article_validation_failed",
+            source=source_name,
+            field="link",
+            reason="empty",
+            title=title[:80],
+        )
+        return False
+    if not link.startswith(("http://", "https://")):
+        logger.warning(
+            "article_validation_failed",
+            source=source_name,
+            field="link",
+            reason="invalid_url_scheme",
+            link=link[:100],
+        )
+        return False
+    return True
+
+
+def _validate_feed_entry(entry: Mapping[str, Any], source_name: str) -> bool:
+    """Validate that a feed entry has the minimum expected elements."""
+    title = entry.get("title")
+    link = entry.get("link")
+    if not title or not isinstance(title, str) or not title.strip():
+        logger.warning("feed_entry_missing_title", source=source_name)
+        return False
+    if not link or not isinstance(link, str) or not link.strip():
+        logger.warning("feed_entry_missing_link", source=source_name, title=title[:80])
+        return False
+    return True
 
 
 def _entry_text(entry: Mapping[str, Any], key: str) -> str:
