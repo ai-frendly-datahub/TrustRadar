@@ -42,6 +42,14 @@ sources:
     type: "rss"
     url: "https://securelist.com/feed/"
 
+  # === JavaScript-rendered sources (Playwright) ===
+  - name: "KISA 보안공지"
+    type: "javascript"
+    url: "https://www.kisa.or.kr/403/form?postSeq=24&page=1"
+  - name: "PIPC 개인정보보호위원회"
+    type: "javascript"
+    url: "https://www.pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS074"
+
 entities:
   - name: "Vulnerability"
     display_name: "취약점"
