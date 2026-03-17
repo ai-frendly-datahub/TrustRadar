@@ -19,19 +19,19 @@
     },
     {
       "name": "DataBreach",
-      "count": 24
+      "count": 23
     },
     {
       "name": "Compliance",
-      "count": 17
+      "count": 18
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 16
     },
     {
       "name": "CorporateTrust",
       "count": 16
-    },
-    {
-      "name": "ConsumerTrust",
-      "count": 15
     },
     {
       "name": "Privacy",
@@ -41,18 +41,18 @@
   "sources": {
     "PIPC 개인정보보호위원회": 1,
     "KISA 보안공지": 1,
-    "Help Net Security": 23,
+    "The Verge": 25,
+    "Help Net Security": 24,
     "The Hacker News": 28,
     "TechCrunch": 48,
     "Troy Hunt - Have I Been Pwned": 1,
     "SANS Internet Storm Center": 8,
-    "Dark Reading": 20,
-    "The Verge": 24,
+    "Dark Reading": 19,
     "Bleeping Computer": 23,
-    "Infosecurity Magazine": 16,
+    "Infosecurity Magazine": 15,
     "Securelist - Kaspersky": 1,
     "Schneier on Security": 5,
     "Krebs on Security": 1
   },
-  "generated_at": "2026-03-17T15:16:57.105333+09:00"
+  "generated_at": "2026-03-17T17:29:13.635323+09:00"
 }
