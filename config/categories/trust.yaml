@@ -42,6 +42,11 @@ sources:
     type: "rss"
     url: "https://securelist.com/feed/"
 
+  # === Government Consumer Protection ===
+  - name: "CFPB Newsroom"
+    type: "rss"
+    url: "https://www.consumerfinance.gov/about-us/newsroom/feed/"
+
   # === JavaScript-rendered sources (Playwright) ===
   - name: "KISA 보안공지"
     type: "javascript"
