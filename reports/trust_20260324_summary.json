@@ -39,8 +39,8 @@
     }
   ],
   "sources": {
-    "KISA 보안공지": 1,
     "PIPC 개인정보보호위원회": 1,
+    "KISA 보안공지": 1,
     "Help Net Security": 10,
     "TechCrunch": 20,
     "Troy Hunt - Have I Been Pwned": 1,
@@ -54,5 +54,5 @@
     "Schneier on Security": 5,
     "Securelist - Kaspersky": 1
   },
-  "generated_at": "2026-03-24T15:12:55.852540+09:00"
+  "generated_at": "2026-03-24T15:25:47.269591+09:00"
 }
