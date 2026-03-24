@@ -1,0 +1,58 @@
+{
+  "date": "2026-03-24",
+  "category": "trust",
+  "article_count": 200,
+  "source_count": 14,
+  "matched_count": 112,
+  "top_entities": [
+    {
+      "name": "Threat",
+      "count": 52
+    },
+    {
+      "name": "Vulnerability",
+      "count": 35
+    },
+    {
+      "name": "DataBreach",
+      "count": 27
+    },
+    {
+      "name": "Malware",
+      "count": 27
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 18
+    },
+    {
+      "name": "Compliance",
+      "count": 16
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 12
+    },
+    {
+      "name": "Privacy",
+      "count": 8
+    }
+  ],
+  "sources": {
+    "PIPC 개인정보보호위원회": 1,
+    "KISA 보안공지": 1,
+    "SANS Internet Storm Center": 13,
+    "TechCrunch": 32,
+    "Bleeping Computer": 20,
+    "The Verge": 17,
+    "Dark Reading": 25,
+    "The Hacker News": 33,
+    "Infosecurity Magazine": 24,
+    "Krebs on Security": 4,
+    "Help Net Security": 16,
+    "Schneier on Security": 9,
+    "Securelist - Kaspersky": 3,
+    "Troy Hunt - Have I Been Pwned": 2
+  },
+  "generated_at": "2026-03-24T12:38:42.447811+09:00"
+}
