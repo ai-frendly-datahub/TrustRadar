@@ -1,0 +1,56 @@
+{
+  "date": "2026-03-28",
+  "category": "trust",
+  "article_count": 200,
+  "source_count": 12,
+  "matched_count": 100,
+  "top_entities": [
+    {
+      "name": "Threat",
+      "count": 50
+    },
+    {
+      "name": "DataBreach",
+      "count": 24
+    },
+    {
+      "name": "Vulnerability",
+      "count": 22
+    },
+    {
+      "name": "Malware",
+      "count": 19
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 19
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 11
+    },
+    {
+      "name": "Compliance",
+      "count": 10
+    },
+    {
+      "name": "Privacy",
+      "count": 7
+    }
+  ],
+  "sources": {
+    "PIPC 개인정보보호위원회": 1,
+    "KISA 보안공지": 1,
+    "TechCrunch": 50,
+    "The Verge": 30,
+    "Bleeping Computer": 25,
+    "Schneier on Security": 3,
+    "The Hacker News": 20,
+    "Dark Reading": 20,
+    "Infosecurity Magazine": 17,
+    "SANS Internet Storm Center": 6,
+    "Help Net Security": 24,
+    "Securelist - Kaspersky": 3
+  },
+  "generated_at": "2026-03-28T10:49:30.095452+09:00"
+}
