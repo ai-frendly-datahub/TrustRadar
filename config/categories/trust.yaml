@@ -42,6 +42,58 @@ sources:
     type: "rss"
     url: "https://securelist.com/feed/"
 
+  # === Reddit Security Communities ===
+  - name: "Reddit r/cybersecurity"
+    type: "rss"
+    url: "https://www.reddit.com/r/cybersecurity/.rss"
+  - name: "Reddit r/netsec"
+    type: "rss"
+    url: "https://www.reddit.com/r/netsec/.rss"
+  - name: "Reddit r/privacy"
+    type: "rss"
+    url: "https://www.reddit.com/r/privacy/.rss"
+  - name: "Reddit r/hacking"
+    type: "rss"
+    url: "https://www.reddit.com/r/hacking/.rss"
+
+  # === Security Podcasts ===
+  - name: "Darknet Diaries"
+    type: "rss"
+    url: "https://feeds.megaphone.fm/darknetdiaries"
+  - name: "Security Now"
+    type: "rss"
+    url: "https://feeds.twit.tv/sn.xml"
+
+  # === Government/Official Threat Intelligence ===
+  - name: "CISA Alerts"
+    type: "rss"
+    url: "https://www.cisa.gov/news.xml"
+  - name: "UK NCSC Blog"
+    type: "rss"
+    url: "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml"
+  - name: "Australian ACSC"
+    type: "rss"
+    url: "https://www.cyber.gov.au/rss.xml"
+
+  # === Threat Intelligence & Research ===
+  - name: "AlienVault OTX Pulse"
+    type: "rss"
+    url: "https://otx.alienvault.com/pulse/feed"
+  - name: "URLhaus Abuse Feeds"
+    type: "rss"
+    url: "https://urlhaus.abuse.ch/feeds/rss/"
+  - name: "CVE Details"
+    type: "rss"
+    url: "https://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&hasexp=0&opov=0&version_id=0&cvssscoremin=0&cvssscoremax=0&pession=0&sha=ea1d5cee14c5c57a35deac8e11d7d57e2e93b1fb&order=1"
+
+  # === International Cybersecurity Agencies ===
+  - name: "ENISA News"
+    type: "rss"
+    url: "https://www.enisa.europa.eu/publications/RSS"
+  - name: "Singapore CSA"
+    type: "rss"
+    url: "https://www.csa.gov.sg/rss/news"
+
   # === Government Consumer Protection ===
   - name: "CFPB Newsroom"
     type: "rss"
