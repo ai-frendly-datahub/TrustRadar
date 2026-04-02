@@ -1,229 +1,286 @@
-category_name: "trust"
-display_name: "보안/개인정보 레이더"
-
+category_name: trust
+display_name: 보안/개인정보 레이더
 sources:
-  - name: "TechCrunch"
-    type: "rss"
-    url: "https://techcrunch.com/feed/"
-  - name: "The Verge"
-    type: "rss"
-    url: "https://www.theverge.com/rss/index.xml"
-  - name: "Bleeping Computer"
-    type: "rss"
-    url: "https://www.bleepingcomputer.com/feed/"
-  - name: "Dark Reading"
-    type: "rss"
-    url: "https://www.darkreading.com/rss.xml"
-  - name: "Help Net Security"
-    type: "rss"
-    url: "https://www.helpnetsecurity.com/feed/"
-  - name: "Krebs on Security"
-    type: "rss"
-    url: "https://krebsonsecurity.com/feed/"
-  - name: "Infosecurity Magazine"
-    type: "rss"
-    url: "https://www.infosecurity-magazine.com/rss/news/"
-  - name: "SANS Internet Storm Center"
-    type: "rss"
-    url: "https://isc.sans.edu/rssfeed_full.xml"
-  - name: "Schneier on Security"
-    type: "rss"
-    url: "https://www.schneier.com/feed/atom/"
-  - name: "The Hacker News"
-    type: "rss"
-    url: "https://feeds.feedburner.com/TheHackersNews?format=xml"
-  - name: "Naked Security"
-    type: "rss"
-    url: "https://nakedsecurity.sophos.com/feed/"
-  - name: "Troy Hunt - Have I Been Pwned"
-    type: "rss"
-    url: "https://www.troyhunt.com/rss/"
-  - name: "Securelist - Kaspersky"
-    type: "rss"
-    url: "https://securelist.com/feed/"
-
-  # === Reddit Security Communities ===
-  - name: "Reddit r/cybersecurity"
-    type: "rss"
-    url: "https://www.reddit.com/r/cybersecurity/.rss"
-  - name: "Reddit r/netsec"
-    type: "rss"
-    url: "https://www.reddit.com/r/netsec/.rss"
-  - name: "Reddit r/privacy"
-    type: "rss"
-    url: "https://www.reddit.com/r/privacy/.rss"
-  - name: "Reddit r/hacking"
-    type: "rss"
-    url: "https://www.reddit.com/r/hacking/.rss"
-
-  # === Security Podcasts ===
-  - name: "Darknet Diaries"
-    type: "rss"
-    url: "https://feeds.megaphone.fm/darknetdiaries"
-  - name: "Security Now"
-    type: "rss"
-    url: "https://feeds.twit.tv/sn.xml"
-
-  # === Government/Official Threat Intelligence ===
-  - name: "CISA Alerts"
-    type: "rss"
-    url: "https://www.cisa.gov/news.xml"
-  - name: "UK NCSC Blog"
-    type: "rss"
-    url: "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml"
-  - name: "Australian ACSC"
-    type: "rss"
-    url: "https://www.cyber.gov.au/rss.xml"
-
-  # === Threat Intelligence & Research ===
-  - name: "AlienVault OTX Pulse"
-    type: "rss"
-    url: "https://otx.alienvault.com/pulse/feed"
-  - name: "URLhaus Abuse Feeds"
-    type: "rss"
-    url: "https://urlhaus.abuse.ch/feeds/rss/"
-  - name: "CVE Details"
-    type: "rss"
-    url: "https://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&hasexp=0&opov=0&version_id=0&cvssscoremin=0&cvssscoremax=0&pession=0&sha=ea1d5cee14c5c57a35deac8e11d7d57e2e93b1fb&order=1"
-
-  # === International Cybersecurity Agencies ===
-  - name: "ENISA News"
-    type: "rss"
-    url: "https://www.enisa.europa.eu/publications/RSS"
-  - name: "Singapore CSA"
-    type: "rss"
-    url: "https://www.csa.gov.sg/rss/news"
-
-  # === Government Consumer Protection ===
-  - name: "CFPB Newsroom"
-    type: "rss"
-    url: "https://www.consumerfinance.gov/about-us/newsroom/feed/"
-
-  # === JavaScript-rendered sources (Playwright) ===
-  - name: "KISA 보안공지"
-    type: "javascript"
-    url: "https://www.kisa.or.kr/403/form?postSeq=24&page=1"
-  - name: "PIPC 개인정보보호위원회"
-    type: "javascript"
-    url: "https://www.pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS074"
-
+- name: TechCrunch
+  type: rss
+  url: https://techcrunch.com/feed/
+- name: The Verge
+  type: rss
+  url: https://www.theverge.com/rss/index.xml
+- name: Bleeping Computer
+  type: rss
+  url: https://www.bleepingcomputer.com/feed/
+- name: Dark Reading
+  type: rss
+  url: https://www.darkreading.com/rss.xml
+- name: Help Net Security
+  type: rss
+  url: https://www.helpnetsecurity.com/feed/
+- name: Krebs on Security
+  type: rss
+  url: https://krebsonsecurity.com/feed/
+- name: Infosecurity Magazine
+  type: rss
+  url: https://www.infosecurity-magazine.com/rss/news/
+- name: SANS Internet Storm Center
+  type: rss
+  url: https://isc.sans.edu/rssfeed_full.xml
+- name: Schneier on Security
+  type: rss
+  url: https://www.schneier.com/feed/atom/
+- name: The Hacker News
+  type: rss
+  url: https://feeds.feedburner.com/TheHackersNews?format=xml
+- name: Naked Security
+  type: rss
+  url: https://nakedsecurity.sophos.com/feed/
+- name: Troy Hunt - Have I Been Pwned
+  type: rss
+  url: https://www.troyhunt.com/rss/
+- name: Securelist - Kaspersky
+  type: rss
+  url: https://securelist.com/feed/
+- name: Reddit r/cybersecurity
+  type: reddit
+  url: https://www.reddit.com/r/cybersecurity/
+- name: Reddit r/netsec
+  type: reddit
+  url: https://www.reddit.com/r/netsec/
+- name: Reddit r/privacy
+  type: reddit
+  url: https://www.reddit.com/r/privacy/
+- name: Reddit r/hacking
+  type: reddit
+  url: https://www.reddit.com/r/hacking/
+- name: Darknet Diaries
+  type: rss
+  url: https://feeds.megaphone.fm/darknetdiaries
+- name: Security Now
+  type: rss
+  url: https://feeds.twit.tv/sn.xml
+# NOTE: 2026-04-02 점검 - 403/404 오류로 비활성화
+# - name: CISA Alerts
+#   type: rss
+#   url: https://www.cisa.gov/news.xml
+- name: UK NCSC Blog
+  type: rss
+  url: https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml
+# NOTE: 2026-04-02 점검 - 응답 없음 (Timeout)
+# - name: Australian ACSC
+#   type: rss
+#   url: https://www.cyber.gov.au/rss.xml
+# NOTE: 2026-04-02 점검 - 404 오류로 비활성화
+# - name: AlienVault OTX Pulse
+#   type: rss
+#   url: https://otx.alienvault.com/pulse/feed
+- name: URLhaus Abuse Feeds
+  type: rss
+  url: https://urlhaus.abuse.ch/feeds/rss/
+- name: CVE Details
+  type: rss
+  url: https://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&hasexp=0&opov=0&version_id=0&cvssscoremin=0&cvssscoremax=0&pession=0&sha=ea1d5cee14c5c57a35deac8e11d7d57e2e93b1fb&order=1
+# NOTE: 2026-04-02 점검 - 404 오류로 비활성화
+# - name: ENISA News
+#   type: rss
+#   url: https://www.enisa.europa.eu/publications/RSS
+# NOTE: 2026-04-02 점검 - 403 오류로 비활성화
+# - name: Singapore CSA
+#   type: rss
+#   url: https://www.csa.gov.sg/rss/news
+- name: CFPB Newsroom
+  type: rss
+  url: https://www.consumerfinance.gov/about-us/newsroom/feed/
+- name: KISA 보안공지
+  type: javascript
+  url: https://www.kisa.or.kr/403/form?postSeq=24&page=1
+- name: PIPC 개인정보보호위원회
+  type: javascript
+  url: https://www.pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS074
 entities:
-  - name: "Vulnerability"
-    display_name: "취약점"
-    keywords:
-      - "vulnerability"
-      - "취약점"
-      - "CVE"
-      - "exploit"
-      - "zero-day"
-      - "patch"
-
-  - name: "DataBreach"
-    display_name: "데이터 유출"
-    keywords:
-      - "data breach"
-      - "데이터 유출"
-      - "breach"
-      - "leaked"
-      - "compromised"
-      - "ransomware"
-
-  - name: "Malware"
-    display_name: "악성코드"
-    keywords:
-      - "malware"
-      - "악성코드"
-      - "virus"
-      - "trojan"
-      - "worm"
-      - "botnet"
-
-  - name: "Threat"
-    display_name: "위협"
-    keywords:
-      - "threat"
-      - "위협"
-      - "attack"
-      - "hacking"
-      - "phishing"
-      - "social engineering"
-      - "zero-day"
-      - "supply chain attack"
-      - "state-sponsored"
-      - "apt"
-      - "insider threat"
-      - "deepfake"
-
-  - name: "Privacy"
-    display_name: "개인정보보호"
-    keywords:
-      - "privacy"
-      - "개인정보"
-      - "GDPR"
-      - "surveillance"
-      - "encryption"
-      - "data protection"
-      - "tracking"
-      - "cookies"
-      - "consent"
-      - "data collection"
-      - "user data"
-      - "personal data"
-      - "biometric"
-
-  - name: "CorporateTrust"
-    display_name: "기업 신뢰/평판"
-    keywords:
-      - "reputation"
-      - "trust"
-      - "scandal"
-      - "lawsuit"
-      - "settlement"
-      - "fine"
-      - "penalty"
-      - "investigation"
-      - "accountability"
-      - "transparency"
-      - "whistleblower"
-      - "ethics"
-      - "fraud"
-      - "corruption"
-      - "misconduct"
-
-  - name: "Compliance"
-    display_name: "규정 준수"
-    keywords:
-      - "compliance"
-      - "regulation"
-      - "regulatory"
-      - "gdpr"
-      - "ccpa"
-      - "ftc"
-      - "antitrust"
-      - "monopoly"
-      - "sanction"
-      - "audit"
-      - "enforcement"
-      - "consent decree"
-      - "policy"
-      - "legislation"
-      - "bill"
-
-  - name: "ConsumerTrust"
-    display_name: "소비자 신뢰"
-    keywords:
-      - "consumer"
-      - "customer"
-      - "user"
-      - "safety"
-      - "recall"
-      - "complaint"
-      - "review"
-      - "rating"
-      - "refund"
-      - "warranty"
-      - "scam"
-      - "deceptive"
-      - "misleading"
-      - "class action"
-      - "rights"
+- name: Vulnerability
+  display_name: 취약점
+  keywords:
+  - vulnerability
+  - 취약점
+  - CVE
+  - exploit
+  - zero-day
+  - patch
+- name: DataBreach
+  display_name: 데이터 유출
+  keywords:
+  - data breach
+  - 데이터 유출
+  - breach
+  - leaked
+  - compromised
+  - ransomware
+- name: Malware
+  display_name: 악성코드
+  keywords:
+  - malware
+  - 악성코드
+  - virus
+  - trojan
+  - worm
+  - botnet
+- name: Threat
+  display_name: 위협
+  keywords:
+  - threat
+  - 위협
+  - attack
+  - hacking
+  - phishing
+  - social engineering
+  - zero-day
+  - supply chain attack
+  - state-sponsored
+  - apt
+  - insider threat
+  - deepfake
+- name: Privacy
+  display_name: 개인정보보호
+  keywords:
+  - privacy
+  - 개인정보
+  - GDPR
+  - surveillance
+  - encryption
+  - data protection
+  - tracking
+  - cookies
+  - consent
+  - data collection
+  - user data
+  - personal data
+  - biometric
+- name: CorporateTrust
+  display_name: 기업 신뢰/평판
+  keywords:
+  - reputation
+  - trust
+  - scandal
+  - lawsuit
+  - settlement
+  - fine
+  - penalty
+  - investigation
+  - accountability
+  - transparency
+  - whistleblower
+  - ethics
+  - fraud
+  - corruption
+  - misconduct
+- name: Compliance
+  display_name: 규정 준수
+  keywords:
+  - compliance
+  - regulation
+  - regulatory
+  - gdpr
+  - ccpa
+  - ftc
+  - antitrust
+  - monopoly
+  - sanction
+  - audit
+  - enforcement
+  - consent decree
+  - policy
+  - legislation
+  - bill
+- name: ConsumerTrust
+  display_name: 소비자 신뢰
+  keywords:
+  - consumer
+  - customer
+  - user
+  - safety
+  - recall
+  - complaint
+  - review
+  - rating
+  - refund
+  - warranty
+  - scam
+  - deceptive
+  - misleading
+  - class action
+  - rights
+- name: SecurityGeneral
+  display_name: 보안/개인정보 일반
+  keywords:
+  # 핵심 보안 용어
+  - security
+  - cybersecurity
+  - information security
+  - infosec
+  - cyber attack
+  - cyber threat
+  - security incident
+  - security breach
+  - security vulnerability
+  # 해킹/공격
+  - hacker
+  - hacking
+  - hacked
+  - breach
+  - data breach
+  - security breach
+  - exploit
+  - attack vector
+  - intrusion
+  - compromise
+  # 취약점/패치
+  - vulnerability
+  - CVE
+  - zero-day
+  - patch
+  - security update
+  - security fix
+  - critical vulnerability
+  # 악성코드
+  - malware
+  - ransomware
+  - phishing
+  - scam
+  - fraud
+  - spyware
+  - botnet
+  # 개인정보/프라이버시
+  - privacy
+  - data protection
+  - personal data
+  - user data
+  - tracking
+  - surveillance
+  - encryption
+  - gdpr
+  - ccpa
+  # 인증/접근
+  - authentication
+  - 2fa
+  - mfa
+  - password
+  - credential
+  - access control
+  # 한국어 핵심 용어
+  - 보안
+  - 사이버보안
+  - 정보보안
+  - 해킹
+  - 침해
+  - 유출
+  - 취약점
+  - 악성코드
+  - 랜섬웨어
+  - 피싱
+  - 개인정보
+  - 개인정보보호
+  - 암호화
+  - 인증
+  - 위협
+  - 공격
+  - 패치
