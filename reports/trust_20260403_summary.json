@@ -1,0 +1,65 @@
+{
+  "date": "2026-04-03",
+  "category": "trust",
+  "article_count": 200,
+  "source_count": 17,
+  "matched_count": 119,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 142
+    },
+    {
+      "name": "Threat",
+      "count": 56
+    },
+    {
+      "name": "Vulnerability",
+      "count": 33
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 21
+    },
+    {
+      "name": "Privacy",
+      "count": 17
+    },
+    {
+      "name": "Malware",
+      "count": 17
+    },
+    {
+      "name": "DataBreach",
+      "count": 17
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 11
+    },
+    {
+      "name": "Compliance",
+      "count": 10
+    }
+  ],
+  "sources": {
+    "PIPC 개인정보보호위원회": 1,
+    "KISA 보안공지": 1,
+    "TechCrunch": 38,
+    "Help Net Security": 19,
+    "The Verge": 24,
+    "Dark Reading": 10,
+    "Bleeping Computer": 23,
+    "The Hacker News": 15,
+    "Schneier on Security": 4,
+    "SANS Internet Storm Center": 5,
+    "Infosecurity Magazine": 11,
+    "Reddit r/privacy": 19,
+    "Reddit r/cybersecurity": 24,
+    "Reddit r/netsec": 3,
+    "Securelist - Kaspersky": 1,
+    "Reddit r/hacking": 1,
+    "Security Now": 1
+  },
+  "generated_at": "2026-04-03T08:54:04.064980+09:00"
+}
