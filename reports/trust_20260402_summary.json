@@ -3,59 +3,63 @@
   "category": "trust",
   "article_count": 200,
   "source_count": 17,
-  "matched_count": 105,
+  "matched_count": 116,
   "top_entities": [
     {
+      "name": "SecurityGeneral",
+      "count": 85
+    },
+    {
       "name": "Threat",
-      "count": 59
+      "count": 57
     },
     {
       "name": "Vulnerability",
-      "count": 27
+      "count": 26
     },
     {
       "name": "Privacy",
-      "count": 21
-    },
-    {
-      "name": "DataBreach",
-      "count": 21
+      "count": 22
     },
     {
       "name": "ConsumerTrust",
+      "count": 20
+    },
+    {
+      "name": "DataBreach",
       "count": 19
     },
     {
       "name": "Malware",
-      "count": 15
+      "count": 14
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 13
     },
     {
       "name": "Compliance",
       "count": 11
-    },
-    {
-      "name": "CorporateTrust",
-      "count": 10
     }
   ],
   "sources": {
-    "PIPC 개인정보보호위원회": 1,
     "KISA 보안공지": 1,
-    "Reddit r/privacy": 24,
-    "Reddit r/cybersecurity": 36,
+    "PIPC 개인정보보호위원회": 1,
+    "Help Net Security": 21,
+    "SANS Internet Storm Center": 4,
+    "Reddit r/privacy": 23,
+    "Reddit r/cybersecurity": 34,
     "The Verge": 20,
     "Bleeping Computer": 18,
     "TechCrunch": 36,
-    "SANS Internet Storm Center": 3,
-    "Dark Reading": 11,
+    "Dark Reading": 10,
     "Schneier on Security": 2,
-    "Help Net Security": 18,
-    "The Hacker News": 11,
-    "Infosecurity Magazine": 6,
+    "The Hacker News": 10,
+    "Infosecurity Magazine": 7,
     "Reddit r/netsec": 8,
     "Securelist - Kaspersky": 1,
     "Reddit r/hacking": 3,
     "Security Now": 1
   },
-  "generated_at": "2026-04-02T10:58:13.410969+09:00"
+  "generated_at": "2026-04-02T14:32:50.350215+09:00"
 }
