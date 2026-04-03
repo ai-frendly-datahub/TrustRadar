@@ -40,20 +40,19 @@ sources:
 - name: Securelist - Kaspersky
   type: rss
   url: https://securelist.com/feed/
-# NOTE: 2026-04-03 Reddit sources disabled - collector doesn't support reddit type yet
-# Reddit RSS is blocked with 403, need to implement reddit collector integration
-# - name: Reddit r/cybersecurity
-#   type: reddit
-#   url: https://www.reddit.com/r/cybersecurity/
-# - name: Reddit r/netsec
-#   type: reddit
-#   url: https://www.reddit.com/r/netsec/
-# - name: Reddit r/privacy
-#   type: reddit
-#   url: https://www.reddit.com/r/privacy/
-# - name: Reddit r/hacking
-#   type: reddit
-#   url: https://www.reddit.com/r/hacking/
+# NOTE: 2026-04-03 Reddit collector integration added to collector.py
+- name: Reddit r/cybersecurity
+  type: reddit
+  url: https://www.reddit.com/r/cybersecurity/
+- name: Reddit r/netsec
+  type: reddit
+  url: https://www.reddit.com/r/netsec/
+- name: Reddit r/privacy
+  type: reddit
+  url: https://www.reddit.com/r/privacy/
+- name: Reddit r/hacking
+  type: reddit
+  url: https://www.reddit.com/r/hacking/
 - name: Darknet Diaries
   type: rss
   url: https://feeds.megaphone.fm/darknetdiaries
@@ -75,12 +74,20 @@ sources:
 # - name: AlienVault OTX Pulse
 #   type: rss
 #   url: https://otx.alienvault.com/pulse/feed
-- name: URLhaus Abuse Feeds
+# NOTE: 2026-04-03 URLhaus RSS feed discontinued (404) - no RSS alternative available
+# - name: URLhaus Abuse Feeds
+#   type: rss
+#   url: https://urlhaus.abuse.ch/feeds/rss/
+# NOTE: 2026-04-03 CVE Details returns 403 - replaced with CIRCL Vulnerability-Lookup
+- name: CIRCL CVE Feed
   type: rss
-  url: https://urlhaus.abuse.ch/feeds/rss/
-- name: CVE Details
+  url: https://vulnerability.circl.lu/recent/all.rss
+- name: CIRCL NVD Feed
   type: rss
-  url: https://www.cvedetails.com/vulnerability-feed.php?vendor_id=0&product_id=0&hasexp=0&opov=0&version_id=0&cvssscoremin=0&cvssscoremax=0&pession=0&sha=ea1d5cee14c5c57a35deac8e11d7d57e2e93b1fb&order=1
+  url: https://vulnerability.circl.lu/recent/nvd.rss
+- name: CIRCL KEV Feed
+  type: rss
+  url: https://vulnerability.circl.lu/known-exploited-vulnerabilities.rss
 # NOTE: 2026-04-02 점검 - 404 오류로 비활성화
 # - name: ENISA News
 #   type: rss

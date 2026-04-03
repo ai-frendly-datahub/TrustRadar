@@ -203,10 +203,13 @@ def collect_sources(
     _set_collection_controls(throttler, health_store)
     session = _create_session()
 
-    # --- Source splitting: Pass 1 (RSS) vs Pass 2 (JS/browser) ---
+    # --- Source splitting: Pass 1 (RSS) vs Pass 2 (JS/browser) vs Pass 3 (Reddit) ---
     _js_types = {"javascript", "browser"}
-    rss_sources = [s for s in sources if s.type.lower() not in _js_types]
+    _reddit_types = {"reddit"}
+    _non_rss_types = _js_types | _reddit_types
+    rss_sources = [s for s in sources if s.type.lower() not in _non_rss_types]
     js_sources = [s for s in sources if s.type.lower() in _js_types]
+    reddit_sources = [s for s in sources if s.type.lower() in _reddit_types]
 
     def _collect_for_source(source: Source) -> tuple[list[Article], list[str]]:
         if health_store.is_disabled(source.name):
@@ -266,6 +269,28 @@ def collect_sources(
                     "playwright_unavailable",
                     js_source_count=len(js_sources),
                     hint="pip install 'radar-core[browser]'",
+                )
+
+        # --- Pass 3: Reddit sources via radar_core reddit collector (sequential) ---
+        if reddit_sources:
+            try:
+                from radar_core import collect_reddit_sources
+
+                reddit_articles, reddit_errors = collect_reddit_sources(
+                    reddit_sources,
+                    category=category,
+                    limit=limit_per_source,
+                    timeout=timeout,
+                    health_db_path=health_db_path
+                    or os.environ.get("RADAR_CRAWL_HEALTH_DB_PATH", _DEFAULT_HEALTH_DB_PATH),
+                )
+                articles.extend(reddit_articles)
+                errors.extend(reddit_errors)
+            except ImportError:
+                logger.warning(
+                    "reddit_collector_unavailable",
+                    reddit_source_count=len(reddit_sources),
+                    hint="Ensure radar-core is installed with reddit support",
                 )
     finally:
         session.close()
