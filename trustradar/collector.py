@@ -286,6 +286,11 @@ def collect_sources(
                 )
                 articles.extend(reddit_articles)
                 errors.extend(reddit_errors)
+                logger.info(
+                    "reddit_collection_complete",
+                    article_count=len(reddit_articles),
+                    error_count=len(reddit_errors),
+                )
             except ImportError:
                 logger.warning(
                     "reddit_collector_unavailable",
