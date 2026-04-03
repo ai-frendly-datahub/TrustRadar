@@ -2,12 +2,12 @@
   "date": "2026-04-03",
   "category": "trust",
   "article_count": 200,
-  "source_count": 17,
-  "matched_count": 119,
+  "source_count": 18,
+  "matched_count": 120,
   "top_entities": [
     {
       "name": "SecurityGeneral",
-      "count": 142
+      "count": 146
     },
     {
       "name": "Threat",
@@ -15,11 +15,11 @@
     },
     {
       "name": "Vulnerability",
-      "count": 33
+      "count": 37
     },
     {
       "name": "ConsumerTrust",
-      "count": 21
+      "count": 22
     },
     {
       "name": "Privacy",
@@ -43,23 +43,24 @@
     }
   ],
   "sources": {
-    "PIPC 개인정보보호위원회": 1,
     "KISA 보안공지": 1,
+    "PIPC 개인정보보호위원회": 1,
     "TechCrunch": 38,
     "Help Net Security": 19,
     "The Verge": 24,
     "Dark Reading": 10,
-    "Bleeping Computer": 23,
+    "Bleeping Computer": 22,
     "The Hacker News": 15,
     "Schneier on Security": 4,
     "SANS Internet Storm Center": 5,
     "Infosecurity Magazine": 11,
-    "Reddit r/privacy": 19,
+    "Reddit r/privacy": 18,
     "Reddit r/cybersecurity": 24,
+    "CIRCL KEV Feed": 2,
     "Reddit r/netsec": 3,
     "Securelist - Kaspersky": 1,
     "Reddit r/hacking": 1,
     "Security Now": 1
   },
-  "generated_at": "2026-04-03T09:00:54.799164+09:00"
+  "generated_at": "2026-04-03T09:13:31.922573+09:00"
 }
