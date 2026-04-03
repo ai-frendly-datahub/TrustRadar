@@ -291,6 +291,8 @@ def collect_sources(
                     article_count=len(reddit_articles),
                     error_count=len(reddit_errors),
                 )
+                for err in reddit_errors:
+                    logger.warning("reddit_source_error", error=err)
             except ImportError:
                 logger.warning(
                     "reddit_collector_unavailable",
