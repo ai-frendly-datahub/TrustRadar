@@ -43,8 +43,8 @@
     }
   ],
   "sources": {
-    "PIPC 개인정보보호위원회": 1,
     "KISA 보안공지": 1,
+    "PIPC 개인정보보호위원회": 1,
     "TechCrunch": 38,
     "Help Net Security": 19,
     "The Verge": 24,
@@ -62,5 +62,5 @@
     "Reddit r/hacking": 1,
     "Security Now": 1
   },
-  "generated_at": "2026-04-03T09:26:12.751727+09:00"
+  "generated_at": "2026-04-03T09:30:06.017291+09:00"
 }
