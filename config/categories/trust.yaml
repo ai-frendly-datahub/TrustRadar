@@ -40,19 +40,21 @@ sources:
 - name: Securelist - Kaspersky
   type: rss
   url: https://securelist.com/feed/
-# NOTE: 2026-04-03 Reddit collector integration added to collector.py
-- name: Reddit r/cybersecurity
-  type: reddit
-  url: https://www.reddit.com/r/cybersecurity/
-- name: Reddit r/netsec
-  type: reddit
-  url: https://www.reddit.com/r/netsec/
-- name: Reddit r/privacy
-  type: reddit
-  url: https://www.reddit.com/r/privacy/
-- name: Reddit r/hacking
-  type: reddit
-  url: https://www.reddit.com/r/hacking/
+# NOTE: 2026-04-03 Reddit sources disabled - GitHub Actions IPs blocked by Reddit (403)
+# collector.py has reddit support but Reddit blocks cloud provider IPs
+# Works locally but not in CI. Consider running locally or using proxy.
+# - name: Reddit r/cybersecurity
+#   type: reddit
+#   url: https://www.reddit.com/r/cybersecurity/
+# - name: Reddit r/netsec
+#   type: reddit
+#   url: https://www.reddit.com/r/netsec/
+# - name: Reddit r/privacy
+#   type: reddit
+#   url: https://www.reddit.com/r/privacy/
+# - name: Reddit r/hacking
+#   type: reddit
+#   url: https://www.reddit.com/r/hacking/
 - name: Darknet Diaries
   type: rss
   url: https://feeds.megaphone.fm/darknetdiaries
