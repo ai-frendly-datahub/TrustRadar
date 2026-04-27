@@ -1,0 +1,88 @@
+{
+  "date": "2026-04-14",
+  "category": "trust",
+  "article_count": 37,
+  "source_count": 12,
+  "matched_count": 32,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 158
+    },
+    {
+      "name": "OperationalEvent",
+      "count": 45
+    },
+    {
+      "name": "Privacy",
+      "count": 32
+    },
+    {
+      "name": "VerificationState",
+      "count": 25
+    },
+    {
+      "name": "EnforcementAction",
+      "count": 21
+    },
+    {
+      "name": "EnforcementOutcome",
+      "count": 20
+    },
+    {
+      "name": "Threat",
+      "count": 16
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 14
+    },
+    {
+      "name": "Compliance",
+      "count": 11
+    },
+    {
+      "name": "ServiceOutage",
+      "count": 10
+    },
+    {
+      "name": "Vulnerability",
+      "count": 6
+    },
+    {
+      "name": "DataBreach",
+      "count": 4
+    },
+    {
+      "name": "Malware",
+      "count": 1
+    },
+    {
+      "name": "AIAssetRisk",
+      "count": 1
+    },
+    {
+      "name": "ServiceId",
+      "count": 1
+    },
+    {
+      "name": "AffectedService",
+      "count": 1
+    }
+  ],
+  "sources": {
+    "CIRCL CVE Feed": 4,
+    "PIPC 개인정보보호위원회": 10,
+    "KISA 보안공지": 12,
+    "Information Security Stack Exchange": 1,
+    "Schneier on Security": 1,
+    "The Hacker News": 1,
+    "Help Net Security": 2,
+    "Infosecurity Magazine": 1,
+    "CIRCL NVD Feed": 2,
+    "Troy Hunt - Have I Been Pwned": 1,
+    "Bleeping Computer": 1,
+    "Dark Reading": 1
+  },
+  "generated_at": "2026-04-14T20:30:40.107533+09:00"
+}

@@ -139,6 +139,30 @@ class TestCollectorRetryLogic:
             assert len(articles) == 1
             assert mock_get.call_count == 3
 
+    def test_empty_summary_falls_back_to_title(self) -> None:
+        source = Source(name="test_feed", type="rss", url="http://example.com/feed")
+
+        with patch("radar.collector.requests.get") as mock_get:
+            mock_response = Mock()
+            mock_response.content = b"""<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <item>
+            <title>CVE-2025-15441</title>
+            <link>http://example.com/cve</link>
+            <pubDate>Mon, 01 Jan 2024 12:00:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>"""
+            mock_response.raise_for_status = Mock()
+            mock_get.return_value = mock_response
+
+            articles = _collect_single(source, category="test", limit=10, timeout=15)
+
+        assert len(articles) == 1
+        assert articles[0].title == "CVE-2025-15441"
+        assert articles[0].summary == "CVE-2025-15441"
+
     def test_session_reuse(self) -> None:
         sources = [
             Source(name="feed_1", type="rss", url="http://host1.example.com/feed"),

@@ -1,0 +1,111 @@
+{
+  "date": "2026-04-23",
+  "category": "trust",
+  "article_count": 193,
+  "source_count": 23,
+  "matched_count": 167,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 334
+    },
+    {
+      "name": "Vulnerability",
+      "count": 107
+    },
+    {
+      "name": "OperationalEvent",
+      "count": 74
+    },
+    {
+      "name": "VerificationState",
+      "count": 51
+    },
+    {
+      "name": "Threat",
+      "count": 44
+    },
+    {
+      "name": "Privacy",
+      "count": 33
+    },
+    {
+      "name": "DataBreach",
+      "count": 31
+    },
+    {
+      "name": "Malware",
+      "count": 25
+    },
+    {
+      "name": "IncidentStatus",
+      "count": 23
+    },
+    {
+      "name": "Compliance",
+      "count": 21
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 14
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 13
+    },
+    {
+      "name": "EnforcementAction",
+      "count": 13
+    },
+    {
+      "name": "EnforcementOutcome",
+      "count": 12
+    },
+    {
+      "name": "ServiceId",
+      "count": 7
+    },
+    {
+      "name": "AffectedService",
+      "count": 7
+    },
+    {
+      "name": "IncidentDisclosure",
+      "count": 3
+    },
+    {
+      "name": "AIAssetRisk",
+      "count": 2
+    },
+    {
+      "name": "ServiceOutage",
+      "count": 2
+    }
+  ],
+  "sources": {
+    "CIRCL CVE Feed": 30,
+    "KISA 보안공지": 6,
+    "UK NCSC Blog": 7,
+    "Help Net Security": 13,
+    "PIPC 개인정보보호위원회": 10,
+    "CIRCL NVD Feed": 3,
+    "Bleeping Computer": 18,
+    "Dark Reading": 17,
+    "TechCrunch": 3,
+    "The Hacker News": 31,
+    "Hacker News Security Community": 1,
+    "The Verge": 1,
+    "Infosecurity Magazine": 20,
+    "Schneier on Security": 5,
+    "Security Now": 1,
+    "SANS Internet Storm Center": 4,
+    "CIRCL KEV Feed": 9,
+    "Troy Hunt - Have I Been Pwned": 2,
+    "Information Security Stack Exchange": 6,
+    "Lobsters Security Community": 3,
+    "Krebs on Security": 1,
+    "Darknet Diaries": 1,
+    "Securelist - Kaspersky": 1
+  },
+  "generated_at": "2026-04-23T13:56:33.339683+09:00"
+}

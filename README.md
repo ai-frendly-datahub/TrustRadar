@@ -3,11 +3,11 @@
 **🌐 Live Report**: https://ai-frendly-datahub.github.io/TrustRadar/
 
 
-기업 신뢰도, 평판, 소비자 만족도 정보를 수집하고 기업별 신뢰도 트렌드를 분석합니다.
+보안, 개인정보, 규제 집행, 소비자 신뢰 신호를 함께 수집해 기업별 trust/compliance risk를 추적합니다.
 
 ## 프로젝트 목표
 
-- **데이터 수집**: 신뢰도 평가 기관, 소비자 리뷰 플랫폼
+- **데이터 수집**: 보안 미디어, 규제기관 공지, 집행/사고 공시, 커뮤니티 신호
 - **엔티티 분석**: 산업별 키워드 매칭 (금융, 전자상거래, 통신 등)
 - **트렌드 리포트**: DuckDB 저장 + HTML 리포트로 {domain} 동향 시각화
 - **자동화**: GitHub Actions 일일 수집 + GitHub Pages 리포트 자동 배포
@@ -34,6 +34,22 @@
    ```
 
    주요 옵션: `--per-source-limit 20`, `--recent-days 5`, `--keep-days 60`, `--timeout 20`.
+
+## 소스 전략
+
+- `공식`: KISA, PIPC, FTC 집행/가이드 페이지
+- `시장`: BleepingComputer, Dark Reading, CIRCL, 보안 전문 미디어
+- `커뮤니티`: Hacker News 기반 practitioner discussion signal
+- `운영`: incident disclosure, enforcement action, complaint/remediation 서사를 잡는 공지형 소스
+
+JavaScript/browser 소스를 제대로 수집하려면 `pip install 'radar-core[browser]'`가 필요합니다.
+
+## 데이터 품질 운영
+
+- `config/categories/trust.yaml`의 `data_quality`는 `incident_disclosure`, `status_page_incident`, `enforcement_action`, `consumer_complaint`, `ai_asset_risk` 이벤트를 분리합니다.
+- `trustradar.trust_signals`는 사고 상태, 집행 결과, AI 자산 리스크, 검증 상태를 `matched_entities`의 `IncidentStatus`, `EnforcementOutcome`, `AIAssetRisk`, `OperationalEvent`, `VerificationState`로 보강합니다.
+- 커뮤니티/시장 소스는 `requires_official_confirmation` 또는 `corroborating_report` 역할로만 병합하고, KISA/PIPC/FTC/CFPB/CIRCL 같은 공식 소스를 기준점으로 둡니다.
+- `source_backlog`의 vendor status page, breach notice portal, CFPB complaint 후보는 service id, incident permalink, 개인정보 비식별성, parser 검증 전까지 기본 비활성 후보로 둡니다.
 
 ## GitHub Actions & GitHub Pages
 
@@ -78,3 +94,15 @@ TrustRadar/
     models.py             # 데이터 클래스
   .github/workflows/      # GitHub Actions (crawler + Pages 배포)
 ```
+
+<!-- DATAHUB-OPS-AUDIT:START -->
+## DataHub Operations
+
+- CI/CD workflows: `pr-checks.yml`, `radar-crawler.yml`, `release.yml`.
+- GitHub Pages visualization: `reports/index.html` (valid HTML); https://ai-frendly-datahub.github.io/TrustRadar/.
+- Latest remote Pages check: HTTP 200, HTML.
+- Local workspace audit: 58 Python files parsed, 0 syntax errors.
+- Re-run audit from the workspace root: `python scripts/audit_ci_pages_readme.py --syntax-check --write`.
+- Latest audit report: `_workspace/2026-04-14_github_ci_pages_readme_audit.md`.
+- Latest Pages URL report: `_workspace/2026-04-14_github_pages_url_check.md`.
+<!-- DATAHUB-OPS-AUDIT:END -->

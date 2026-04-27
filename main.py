@@ -6,14 +6,22 @@ from pathlib import Path
 from typing import cast
 
 from trustradar.analyzer import apply_entity_rules
-from trustradar.collector import collect_sources
+from trustradar.collector import article_matches_source_scope, collect_sources
 from trustradar.common.validators import validate_article
-from trustradar.config_loader import load_category_config, load_settings
+from trustradar.config_loader import (
+    load_category_config,
+    load_category_quality_config,
+    load_settings,
+)
 from trustradar.date_storage import apply_date_storage_policy
+from trustradar.models import Article, Source
+from trustradar.quality_report import build_quality_report, write_quality_report
 from trustradar.raw_logger import RawLogger
 from trustradar.reporter import generate_index_html, generate_report
 from trustradar.search_index import SearchIndex
 from trustradar.storage import RadarStorage
+from trustradar.trust_signals import enrich_trust_operational_fields
+from radar_core.ontology import annotate_articles_with_ontology
 
 
 def _send_notifications(
@@ -87,6 +95,7 @@ def run(
     """Execute the lightweight collect -> analyze -> report pipeline."""
     settings = load_settings(config_path)
     category_cfg = load_category_config(category, categories_dir=categories_dir)
+    quality_cfg = load_category_quality_config(category, categories_dir=categories_dir)
 
     print(
         f"[Radar] Collecting '{category_cfg.display_name}' from {len(category_cfg.sources)} sources..."
@@ -97,6 +106,13 @@ def run(
         limit_per_source=per_source_limit,
         timeout=timeout,
     )
+    collected = annotate_articles_with_ontology(
+        collected,
+        repo_name="TrustRadar",
+        sources_by_name={source.name: source for source in category_cfg.sources},
+        category_name=category_cfg.category_name,
+        search_from=Path(__file__),
+    )
 
     raw_logger = RawLogger(settings.raw_data_dir)
     for source in category_cfg.sources:
@@ -104,7 +120,9 @@ def run(
         if source_articles:
             _ = raw_logger.log(source_articles, source_name=source.name)
 
-    analyzed = apply_entity_rules(collected, category_cfg.entities)
+    analyzed = enrich_trust_operational_fields(
+        apply_entity_rules(collected, category_cfg.entities)
+    )
 
     # Validate articles for data quality
     validated_articles = []
@@ -127,16 +145,35 @@ def run(
         for article in validated_articles:
             search_idx.upsert(article.link, article.title, article.summary)
 
-    recent_articles = storage.recent_articles(category_cfg.category_name, days=recent_days)
+    recent_articles = _filter_report_articles(
+        storage.recent_articles(category_cfg.category_name, days=recent_days),
+        category_cfg.sources,
+    )
     storage.close()
 
+    matched_count = sum(1 for a in recent_articles if a.matched_entities)
+    source_count = len({article.source for article in recent_articles if article.source})
     stats = {
         "sources": len(category_cfg.sources),
-        "collected": len(collected),
-        "matched": sum(1 for a in collected if a.matched_entities),
+        "collected": len(recent_articles),
+        "matched": matched_count,
         "validated": len(validated_articles),
         "window_days": recent_days,
+        "article_count": len(recent_articles),
+        "source_count": source_count,
+        "matched_count": matched_count,
     }
+    quality_report = build_quality_report(
+        category=category_cfg,
+        articles=recent_articles,
+        errors=errors,
+        quality_config=quality_cfg,
+    )
+    quality_paths = write_quality_report(
+        quality_report,
+        output_dir=settings.report_dir,
+        category_name=category_cfg.category_name,
+    )
 
     output_path = settings.report_dir / f"{category_cfg.category_name}_report.html"
     _ = generate_report(
@@ -145,6 +182,7 @@ def run(
         output_path=output_path,
         stats=stats,
         errors=errors,
+        quality_report=quality_report,
     )
     generate_index_html(settings.report_dir)
     date_storage = apply_date_storage_policy(
@@ -156,6 +194,7 @@ def run(
         snapshot_db=snapshot_db,
     )
     print(f"[Radar] Report generated at {output_path}")
+    print(f"[Radar] Quality report generated at {quality_paths['latest']}")
     snapshot_path = date_storage.get("snapshot_path")
     if isinstance(snapshot_path, str) and snapshot_path:
         print(f"[Radar] Snapshot saved at {snapshot_path}")
@@ -172,6 +211,22 @@ def run(
     )
 
     return output_path
+
+
+def _filter_report_articles(
+    articles: list[Article],
+    sources: list[Source],
+) -> list[Article]:
+    sources_by_name = {source.name: source for source in sources}
+    scoped_articles: list[Article] = []
+    for article in articles:
+        source = sources_by_name.get(article.source)
+        if source is None:
+            scoped_articles.append(article)
+            continue
+        if article_matches_source_scope(source, article.title, article.summary):
+            scoped_articles.append(article)
+    return scoped_articles
 
 
 def parse_args() -> argparse.Namespace:

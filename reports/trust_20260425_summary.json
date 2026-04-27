@@ -1,0 +1,136 @@
+{
+  "date": "2026-04-25",
+  "category": "trust",
+  "article_count": 193,
+  "source_count": 19,
+  "matched_count": 160,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 211
+    },
+    {
+      "name": "Vulnerability",
+      "count": 95
+    },
+    {
+      "name": "Threat",
+      "count": 38
+    },
+    {
+      "name": "OperationalEvent",
+      "count": 31
+    },
+    {
+      "name": "DataBreach",
+      "count": 30
+    },
+    {
+      "name": "VerificationState",
+      "count": 25
+    },
+    {
+      "name": "Privacy",
+      "count": 22
+    },
+    {
+      "name": "Malware",
+      "count": 10
+    },
+    {
+      "name": "Compliance",
+      "count": 10
+    },
+    {
+      "name": "ServiceId",
+      "count": 7
+    },
+    {
+      "name": "AffectedService",
+      "count": 7
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 6
+    },
+    {
+      "name": "IncidentStatus",
+      "count": 5
+    },
+    {
+      "name": "EnforcementAction",
+      "count": 5
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 5
+    },
+    {
+      "name": "EnforcementOutcome",
+      "count": 4
+    },
+    {
+      "name": "IncidentDisclosure",
+      "count": 3
+    },
+    {
+      "name": "AIAssetRisk",
+      "count": 2
+    }
+  ],
+  "sources": {
+    "PIPC 개인정보보호위원회": 15,
+    "KISA 보안공지": 8,
+    "The Hacker News": 18,
+    "Hacker News Security Community": 3,
+    "CIRCL CVE Feed": 61,
+    "Bleeping Computer": 22,
+    "Schneier on Security": 3,
+    "Dark Reading": 11,
+    "Information Security Stack Exchange": 3,
+    "CIRCL NVD Feed": 20,
+    "Infosecurity Magazine": 9,
+    "Securelist - Kaspersky": 1,
+    "TechCrunch": 3,
+    "Lobsters Security Community": 2,
+    "The Verge": 3,
+    "UK NCSC Blog": 6,
+    "SANS Internet Storm Center": 1,
+    "Help Net Security": 3,
+    "CIRCL KEV Feed": 1
+  },
+  "generated_at": "2026-04-25T21:49:56.713743+09:00",
+  "ontology": {
+    "repo": "TrustRadar",
+    "category": "trust",
+    "ontology_version": "0.1.0",
+    "event_model_ids": [
+      "trust.consumer_complaint",
+      "trust.enforcement_action",
+      "trust.incident_disclosure",
+      "trust.status_page_incident"
+    ],
+    "event_model_mappings": {
+      "incident_disclosure": "trust.incident_disclosure",
+      "status_page_incident": "trust.status_page_incident",
+      "enforcement_action": "trust.enforcement_action",
+      "consumer_complaint": "trust.consumer_complaint"
+    },
+    "entity_type_hints": [
+      "security.incident",
+      "organization.agency"
+    ],
+    "source_role_ids": [
+      "context_only",
+      "verification_evidence"
+    ],
+    "source_role_mappings": {
+      "CIRCL NVD Feed": "verification_evidence",
+      "CFPB Newsroom": "context_only"
+    },
+    "evidence_policy_ids": [
+      "traceable_url_required",
+      "official_confirmation_required"
+    ]
+  }
+}

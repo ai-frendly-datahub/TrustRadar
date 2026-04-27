@@ -3,6 +3,13 @@
 **Generated:** 2026-03-04  
 **Research Duration:** 5m 40s
 
+## 2026-04-12 Data Quality Overlay
+
+- `trust.yaml` now separates operational event models: `incident_disclosure`, `status_page_incident`, `enforcement_action`, `consumer_complaint`, and `ai_asset_risk`.
+- Official sources such as KISA, PIPC, FTC, CFPB, CIRCL, and UK NCSC anchor verification. Security media and practitioner communities are treated as corroborating signals unless an official source confirms the event.
+- Community coverage was widened with Hacker News, Lobsters, and Information Security Stack Exchange so verification scoring is not dependent on a single discussion surface.
+- `source_backlog` keeps high-effort candidates inactive until parser and governance checks pass: vendor status pages, Statuspage.io feeds, attorney general breach notices, HHS OCR breach portal, and CFPB complaint data.
+
 ---
 
 ## RSS Feeds (19+ Sources)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import os
+import re
 import threading
 import time
 from collections.abc import Mapping
@@ -34,6 +35,7 @@ _DEFAULT_HEALTH_DB_PATH = "data/radar_data.duckdb"
 _COLLECTION_CONTROL_LOCK = threading.Lock()
 _ACTIVE_THROTTLER: AdaptiveThrottler | None = None
 _ACTIVE_HEALTH_STORE: CrawlHealthStore | None = None
+_ASCII_TOKEN_RE = re.compile(r"[0-9a-z]")
 
 
 def _set_collection_controls(throttler: AdaptiveThrottler, health_store: CrawlHealthStore) -> None:
@@ -175,6 +177,57 @@ def _parse_retry_after(value: str | None) -> int | str | None:
     return stripped
 
 
+def _source_bool(source: Source, key: str) -> bool:
+    value = source.config.get(key)
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+    return False
+
+
+def _config_string_list(config: Mapping[str, object], key: str) -> list[str]:
+    raw = config.get(key)
+    if isinstance(raw, str) and raw.strip():
+        values: list[object] = [raw]
+    elif isinstance(raw, list):
+        values = raw
+    elif isinstance(raw, tuple | set):
+        values = list(raw)
+    else:
+        return []
+    return [str(value).strip() for value in values if str(value).strip()]
+
+
+def _matches_scope_keyword(text_lower: str, keyword: str) -> bool:
+    normalized = keyword.casefold().strip()
+    if not normalized:
+        return False
+    if normalized.isascii() and _ASCII_TOKEN_RE.search(normalized):
+        pattern = rf"(?<![0-9a-z]){re.escape(normalized)}(?![0-9a-z])"
+        return re.search(pattern, text_lower) is not None
+    return normalized in text_lower
+
+
+def article_matches_source_scope(source: Source, title: str, summary: str) -> bool:
+    """Return whether an item belongs in a source's configured topic scope."""
+    include_keywords = _config_string_list(source.config, "include_keywords")
+    exclude_keywords = _config_string_list(source.config, "exclude_keywords")
+    if not include_keywords and not exclude_keywords:
+        return True
+
+    text_lower = f"{title}\n{summary}".casefold()
+    if include_keywords and not any(
+        _matches_scope_keyword(text_lower, keyword) for keyword in include_keywords
+    ):
+        return False
+    if exclude_keywords and any(
+        _matches_scope_keyword(text_lower, keyword) for keyword in exclude_keywords
+    ):
+        return False
+    return True
+
+
 def collect_sources(
     sources: list[Source],
     *,
@@ -188,18 +241,21 @@ def collect_sources(
     """Fetch items from all configured sources, returning articles and errors."""
     articles: list[Article] = []
     errors: list[str] = []
+    enabled_sources = [source for source in sources if source.enabled]
     manager = get_circuit_breaker_manager()
     workers = _resolve_max_workers(max_workers)
+    resolved_health_db_path = health_db_path or os.environ.get(
+        "RADAR_CRAWL_HEALTH_DB_PATH", _DEFAULT_HEALTH_DB_PATH
+    )
     source_hosts: dict[str, str] = {
-        source.name: (urlparse(source.url).netloc.lower() or source.name) for source in sources
+        source.name: (urlparse(source.url).netloc.lower() or source.name)
+        for source in enabled_sources
     }
     rate_limiters: dict[str, RateLimiter] = {
         host: RateLimiter(min_interval=min_interval_per_host) for host in set(source_hosts.values())
     }
     throttler = AdaptiveThrottler(min_delay=max(0.001, min_interval_per_host))
-    health_store = CrawlHealthStore(
-        health_db_path or os.environ.get("RADAR_CRAWL_HEALTH_DB_PATH", _DEFAULT_HEALTH_DB_PATH)
-    )
+    health_store = CrawlHealthStore(resolved_health_db_path)
     _set_collection_controls(throttler, health_store)
     session = _create_session()
 
@@ -207,12 +263,15 @@ def collect_sources(
     _js_types = {"javascript", "browser"}
     _reddit_types = {"reddit"}
     _non_rss_types = _js_types | _reddit_types
-    rss_sources = [s for s in sources if s.type.lower() not in _non_rss_types]
-    js_sources = [s for s in sources if s.type.lower() in _js_types]
-    reddit_sources = [s for s in sources if s.type.lower() in _reddit_types]
+    rss_sources = [s for s in enabled_sources if s.type.lower() not in _non_rss_types]
+    js_sources = [s for s in enabled_sources if s.type.lower() in _js_types]
+    reddit_sources = [s for s in enabled_sources if s.type.lower() in _reddit_types]
 
     def _collect_for_source(source: Source) -> tuple[list[Article], list[str]]:
-        if health_store.is_disabled(source.name):
+        if (
+            not _source_bool(source, "bypass_crawl_health")
+            and health_store.is_disabled(source.name)
+        ):
             return [], [f"{source.name}: Source disabled (crawl health threshold reached)"]
 
         host = source_hosts[source.name]
@@ -261,7 +320,12 @@ def collect_sources(
             try:
                 from .browser_collector import collect_browser_sources
 
-                js_articles, js_errors = collect_browser_sources(js_sources, category)
+                js_articles, js_errors = collect_browser_sources(
+                    js_sources,
+                    category,
+                    timeout=max(1_000, timeout * 1_000),
+                    health_db_path=resolved_health_db_path,
+                )
                 articles.extend(js_articles)
                 errors.extend(js_errors)
             except ImportError:
@@ -281,8 +345,7 @@ def collect_sources(
                     category=category,
                     limit=limit_per_source,
                     timeout=timeout,
-                    health_db_path=health_db_path
-                    or os.environ.get("RADAR_CRAWL_HEALTH_DB_PATH", _DEFAULT_HEALTH_DB_PATH),
+                    health_db_path=resolved_health_db_path,
                 )
                 articles.extend(reddit_articles)
                 errors.extend(reddit_errors)
@@ -369,7 +432,9 @@ def _collect_single(
                 continue
 
             # Strip HTML from summary using explicit parser
-            article_summary = _strip_html(summary) if summary else ""
+            article_summary = _strip_html(summary) if summary else title
+            if not article_matches_source_scope(source, title, article_summary):
+                continue
 
             items.append(
                 Article(

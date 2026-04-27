@@ -1,0 +1,49 @@
+{
+  "date": "2026-04-13",
+  "category": "trust",
+  "article_count": 5,
+  "source_count": 5,
+  "matched_count": 3,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 4
+    },
+    {
+      "name": "DataBreach",
+      "count": 1
+    },
+    {
+      "name": "Privacy",
+      "count": 1
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 1
+    },
+    {
+      "name": "OperationalEvent",
+      "count": 1
+    },
+    {
+      "name": "VerificationState",
+      "count": 1
+    },
+    {
+      "name": "Vulnerability",
+      "count": 1
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 1
+    }
+  ],
+  "sources": {
+    "The Hacker News": 1,
+    "Help Net Security": 1,
+    "SANS Internet Storm Center": 1,
+    "Lobsters Security Community": 1,
+    "Information Security Stack Exchange": 1
+  },
+  "generated_at": "2026-04-13T17:19:40.801642+09:00"
+}

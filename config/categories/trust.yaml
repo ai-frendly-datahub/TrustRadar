@@ -1,36 +1,220 @@
 category_name: trust
 display_name: 보안/개인정보 레이더
+
+data_quality:
+  priority: P0
+  primary_motion: compliance-risk
+  weakest_dimension: verification
+  quality_outputs:
+    freshness_report: reports/trust_quality.json
+    dated_freshness_report_pattern: reports/trust_YYYYMMDD_quality.json
+    tracked_event_models:
+    - incident_disclosure
+    - status_page_incident
+    - enforcement_action
+    - consumer_complaint
+    - ai_asset_risk
+  event_models:
+  - incident_disclosure
+  - status_page_incident
+  - enforcement_action
+  - consumer_complaint
+  - ai_asset_risk
+  canonical_keys:
+    incident:
+      fields:
+      - source
+      - affected_entity
+      - incident_type
+      - disclosed_at
+    enforcement_case:
+      fields:
+      - agency
+      - case_name
+      - action_date
+    status_incident:
+      fields:
+      - service
+      - status
+      - observed_at
+    complaint:
+      fields:
+      - source
+      - company
+      - complaint_type
+  freshness_sla:
+    incident_disclosure:
+      max_age_days: 1
+      stale_after_days: 3
+    status_page_incident:
+      max_age_days: 1
+      stale_after_days: 2
+    enforcement_action:
+      max_age_days: 1
+      stale_after_days: 3
+    consumer_complaint:
+      max_age_days: 2
+      stale_after_days: 7
+    ai_asset_risk:
+      max_age_days: 7
+      stale_after_days: 30
+  quality_gates:
+  - 공식 disclosure와 시장/커뮤니티 보도를 분리
+  - 사고 발생일·공개일·해결일·수집일을 별도 필드로 유지
+  - 커뮤니티 신호는 official_confirmation_required 상태로만 병합
+  - 취약점, 장애, 개인정보 사고, AI 자산 리스크를 같은 incident로 병합하지 않음
+
+source_backlog:
+  status_page_candidates:
+  - id: official_status_pages
+    name: Official vendor status pages
+    url: ""
+    layer: operational
+    event_model: status_page_incident
+    activation_gate: service id mapping, incident permalink, resolved_at parser 검증 후 활성화
+  - id: statuspage_io_incident_feeds
+    name: Statuspage.io incident feeds
+    url: ""
+    layer: operational
+    event_model: status_page_incident
+    activation_gate: vendor별 public feed 접근성, rate limit, status taxonomy 검증 후 활성화
+  incident_disclosure_candidates:
+  - id: state_attorney_general_breach_notices
+    name: US state attorney general breach notices
+    url: ""
+    layer: official
+    event_model: incident_disclosure
+    activation_gate: 주별 schema 차이, affected count, disclosed_at parser 검증 후 활성화
+  - id: hhs_ocr_breach_portal
+    name: HHS OCR breach portal
+    url: https://ocrportal.hhs.gov/ocr/breach/breach_report.jsf
+    layer: official
+    event_model: incident_disclosure
+    activation_gate: query form, covered entity, individuals affected parser 검증 후 활성화
+  complaint_candidates:
+  - id: cfpb_complaint_database
+    name: CFPB Consumer Complaint Database
+    url: https://www.consumerfinance.gov/data-research/consumer-complaints/
+    layer: official
+    event_model: consumer_complaint
+    activation_gate: 개인정보 비식별성, company normalization, complaint status mapping 검증 후 활성화
 sources:
 - name: TechCrunch
   type: rss
   url: https://techcrunch.com/feed/
+  config:
+    include_keywords: &trust_topic_keywords
+    - security
+    - cybersecurity
+    - privacy
+    - data breach
+    - breach
+    - vulnerability
+    - exploit
+    - zero-day
+    - ransomware
+    - malware
+    - phishing
+    - credential
+    - authentication
+    - encryption
+    - surveillance
+    - biometric
+    - FTC
+    - GDPR
+    - incident
+    - outage
+    - supply chain attack
+    - lockdown mode
+    - LLM
+    - large language model
 - name: The Verge
   type: rss
   url: https://www.theverge.com/rss/index.xml
+  config:
+    include_keywords: *trust_topic_keywords
 - name: Bleeping Computer
   type: rss
   url: https://www.bleepingcomputer.com/feed/
+  trust_tier: T2_professional
+  content_type: security_news
+  producer_role: security_media
+  collection_tier: C1_rss
+  info_purpose:
+  - incident_disclosure
+  - verification_signal
+  - market_report
+  notes: Security media source used as a corroborating signal, not as final official disclosure; quiet windows of 1-2 days are common between higher-signal incident posts.
+  config:
+    event_model: incident_disclosure
+    verification_role: corroborating_report
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 2
 - name: Dark Reading
   type: rss
   url: https://www.darkreading.com/rss.xml
+  trust_tier: T2_professional
+  content_type: security_news
+  producer_role: security_media
+  collection_tier: C1_rss
+  info_purpose:
+  - incident_disclosure
+  - verification_signal
+  - market_report
+  notes: Security industry coverage used to cross-check breach and vulnerability narratives; quiet windows of 1-2 days are common between notable posts.
+  config:
+    event_model: incident_disclosure
+    verification_role: corroborating_report
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 2
 - name: Help Net Security
   type: rss
   url: https://www.helpnetsecurity.com/feed/
 - name: Krebs on Security
   type: rss
   url: https://krebsonsecurity.com/feed/
+  trust_tier: T2_expert
+  content_type: security_news
+  producer_role: security_researcher
+  collection_tier: C1_rss
+  info_purpose:
+  - incident_disclosure
+  - verification_signal
+  - breach_analysis
+  notes: High-signal breach analysis used as corroborating evidence until official disclosure is available; posting cadence is often every 4-5 days rather than daily.
+  config:
+    event_model: incident_disclosure
+    verification_role: corroborating_report
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 5
 - name: Infosecurity Magazine
   type: rss
   url: https://www.infosecurity-magazine.com/rss/news/
 - name: SANS Internet Storm Center
   type: rss
   url: https://isc.sans.edu/rssfeed_full.xml
+  config:
+    include_keywords: *trust_topic_keywords
 - name: Schneier on Security
   type: rss
   url: https://www.schneier.com/feed/atom/
 - name: The Hacker News
   type: rss
   url: https://feeds.feedburner.com/TheHackersNews?format=xml
+  trust_tier: T2_professional
+  content_type: security_news
+  producer_role: security_media
+  collection_tier: C1_rss
+  info_purpose:
+  - incident_disclosure
+  - vulnerability_context
+  - verification_signal
+  notes: Security media feed for broad vulnerability and incident coverage; quiet windows of 1-2 days are common between publishing bursts.
+  config:
+    event_model: incident_disclosure
+    verification_role: corroborating_report
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 2
 - name: Naked Security
   type: rss
   url: https://nakedsecurity.sophos.com/feed/
@@ -84,12 +268,52 @@ sources:
 - name: CIRCL CVE Feed
   type: rss
   url: https://vulnerability.circl.lu/recent/all.rss
+  trust_tier: T1_official
+  content_type: vulnerability_feed
+  producer_role: security_research_org
+  collection_tier: C1_rss
+  info_purpose:
+  - vulnerability_context
+  - verification_signal
+  notes: CIRCL Vulnerability-Lookup feed used as a structured vulnerability verification layer.
+  config:
+    event_model: incident_disclosure
+    verification_role: structured_vulnerability_reference
+    merge_policy: cross_reference_only
+    freshness_sla_days: 1
 - name: CIRCL NVD Feed
   type: rss
   url: https://vulnerability.circl.lu/recent/nvd.rss
+  trust_tier: T1_official
+  content_type: vulnerability_feed
+  producer_role: security_research_org
+  collection_tier: C1_rss
+  info_purpose:
+  - vulnerability_context
+  - verification_signal
+  notes: NVD-derived CIRCL feed used to cross-check vulnerability identifiers; cadence can lag the broader CIRCL CVE feed by more than one day.
+  config:
+    event_model: incident_disclosure
+    verification_role: structured_vulnerability_reference
+    merge_policy: cross_reference_only
+    freshness_sla_days: 2
 - name: CIRCL KEV Feed
   type: rss
   url: https://vulnerability.circl.lu/known-exploited-vulnerabilities.rss
+  trust_tier: T1_official
+  content_type: exploited_vulnerability_feed
+  producer_role: security_research_org
+  collection_tier: C1_rss
+  info_purpose:
+  - vulnerability_context
+  - verification_signal
+  - incident_priority
+  notes: Known exploited vulnerability feed used to prioritize incident risk and verification.
+  config:
+    event_model: incident_disclosure
+    verification_role: exploited_vulnerability_reference
+    merge_policy: cross_reference_only
+    freshness_sla_days: 3
 # NOTE: 2026-04-02 점검 - 404 오류로 비활성화
 # - name: ENISA News
 #   type: rss
@@ -101,21 +325,178 @@ sources:
 - name: CFPB Newsroom
   type: rss
   url: https://www.consumerfinance.gov/about-us/newsroom/feed/
+  trust_tier: T1_official
+  content_type: notice
+  producer_role: government
+  collection_tier: C1_rss
+  info_purpose:
+  - official_notice
+  - regulatory_guidance
+  - verification_signal
+  notes: Broad official consumer finance newsroom feed kept as regulatory context; it is not a dependable active trust enforcement freshness source.
+  config:
+    event_model: regulatory_guidance
+    verification_role: official_guidance
+    merge_policy: authoritative_source
+- name: FTC Press Releases
+  type: javascript
+  url: https://www.ftc.gov/news-events/news/press-releases
+  enabled: false
+  trust_tier: T1_official
+  content_type: notice
+  producer_role: government
+  collection_tier: C3_html_js
+  info_purpose:
+  - enforcement
+  - complaint
+  - refund
+  - enforcement_action
+  - consumer_complaint
+  - verification_signal
+  notes: "DISABLED 2026-04-14: official FTC page/RSS returns apology or browser wait timeout from this runner; keep cataloged until an accessible official feed/browser contract is verified."
+  config:
+    disabled_reason: official_ftc_access_blocked
+    required_before_enable: [accessible_official_feed_or_browser_contract, enforcement_action_parser_smoke]
+    event_model: enforcement_action
+    verification_role: official_action
+    merge_policy: authoritative_source
+    freshness_sla_days: 1
+- name: FTC Privacy and Security Guidance
+  type: javascript
+  url: https://www.ftc.gov/business-guidance/privacy-security
+  enabled: false
+  trust_tier: T1_official
+  content_type: guidance
+  producer_role: government
+  collection_tier: C3_html_js
+  info_purpose:
+  - guidance
+  - compliance
+  - ai_asset_risk
+  - verification_signal
+  notes: "DISABLED 2026-04-14: official FTC page/RSS returns apology or browser wait timeout from this runner; keep cataloged until an accessible official feed/browser contract is verified."
+  config:
+    disabled_reason: official_ftc_access_blocked
+    required_before_enable: [accessible_official_feed_or_browser_contract, guidance_parser_smoke]
+    event_model: ai_asset_risk
+    verification_role: official_guidance
+    merge_policy: authoritative_source
+    freshness_sla_days: 7
+- name: Hacker News Security Community
+  type: rss
+  url: https://news.ycombinator.com/rss
+  trust_tier: T4_community
+  content_type: community
+  producer_role: consumer_comm
+  collection_tier: C1_rss
+  info_purpose:
+  - community
+  - incident
+  - verification_signal
+  notes: Community discussion signal for breach, outage, and trust narratives that practitioners surface early; volume can stay quiet for 2-3 days between notable threads.
+  config:
+    event_model: incident_disclosure
+    verification_role: community_signal
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 3
+    include_keywords: *trust_topic_keywords
+- name: Lobsters Security Community
+  type: rss
+  url: https://lobste.rs/t/security.rss
+  trust_tier: T4_community
+  content_type: community
+  producer_role: consumer_comm
+  collection_tier: C1_rss
+  info_purpose:
+  - community
+  - incident
+  - verification_signal
+  notes: Practitioner community signal for security incident and vulnerability cross-checking.
+  config:
+    event_model: incident_disclosure
+    verification_role: community_signal
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 3
+    include_keywords: *trust_topic_keywords
+- name: Information Security Stack Exchange
+  type: rss
+  url: https://security.stackexchange.com/feeds
+  trust_tier: T4_community
+  content_type: community
+  producer_role: consumer_comm
+  collection_tier: C1_rss
+  info_purpose:
+  - community
+  - incident
+  - verification_signal
+  notes: Practitioner Q&A signal for emerging security issues; never authoritative without official disclosure.
+  config:
+    event_model: incident_disclosure
+    verification_role: community_signal
+    merge_policy: requires_official_confirmation
+    freshness_sla_days: 3
 - name: KISA 보안공지
   type: javascript
-  url: https://www.kisa.or.kr/403/form?postSeq=24&page=1
+  url: https://www.kisa.or.kr/401
+  trust_tier: T1_official
+  content_type: notice
+  producer_role: government
+  collection_tier: C3_html_js
+  info_purpose:
+  - official_notice
+  - incident
+  - compliance
+  - incident_disclosure
+  - verification_signal
+  notes: Korean official security notices and incident-related advisories.
   config:
-    wait_for: ".board_list"
+    event_model: incident_disclosure
+    verification_role: official_disclosure
+    merge_policy: authoritative_source
+    freshness_sla_days: 1
+    wait_for: body
+    timeout: 20000
+    bypass_crawl_health: true
+    link_selector: "a[href*='/401/form']"
+    include_keywords:
+    - 보안
+    - 취약점
+    - 침해
+    - 사고
+    - 정보보호
+    - 악성코드
+    - 제로트러스트
+    - n2sf
 - name: PIPC 개인정보보호위원회
   type: javascript
   url: https://www.pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS074
+  trust_tier: T1_official
+  content_type: notice
+  producer_role: government
+  collection_tier: C3_html_js
+  info_purpose:
+  - enforcement
+  - complaint
+  - privacy
+  - enforcement_action
+  - consumer_complaint
+  - verification_signal
+  notes: Korean privacy regulator announcements, sanctions, and complaint-adjacent decisions.
   config:
-    wait_for: ".board_list"
+    event_model: enforcement_action
+    verification_role: official_action
+    merge_policy: authoritative_source
+    freshness_sla_days: 1
+    wait_for: body
+    timeout: 20000
+    bypass_crawl_health: true
+    link_selector: "a[href*='selectBoardArticle.do'][href*='BS074']"
 entities:
 - name: Vulnerability
   display_name: 취약점
   keywords:
   - vulnerability
+  - vulnerabilities
   - 취약점
   - CVE
   - exploit
@@ -145,8 +526,12 @@ entities:
   - threat
   - 위협
   - attack
+  - hackers
   - hacking
   - phishing
+  - stealer
+  - malicious
+  - critical infrastructure
   - social engineering
   - zero-day
   - supply chain attack
@@ -224,6 +609,77 @@ entities:
   - misleading
   - class action
   - rights
+- name: IncidentDisclosure
+  display_name: 사고 공시/통지
+  keywords:
+  - incident disclosure
+  - breach notice
+  - disclosure
+  - notified affected users
+  - unauthorized access
+  - security incident
+  - 유출 통지
+  - 침해사고
+  - 사고 공지
+  - disclosure log
+- name: EnforcementAction
+  display_name: 규제 집행/제재
+  keywords:
+  - enforcement
+  - consent order
+  - settlement
+  - fine
+  - penalty
+  - sanction
+  - remediation
+  - undertaking
+  - 과징금
+  - 과태료
+  - 제재
+  - 시정명령
+  - 처분
+- name: ServiceOutage
+  display_name: 서비스 장애/상태
+  keywords:
+  - outage
+  - downtime
+  - degraded performance
+  - service disruption
+  - status page
+  - incident response
+  - 장애
+  - 서비스 중단
+  - 점검
+  - 복구
+- name: AIAssetRisk
+  display_name: AI 자산 리스크
+  keywords:
+  - model weights
+  - model weight
+  - RAG
+  - embedding
+  - embeddings
+  - vector database
+  - inference log
+  - prompt log
+  - training data
+  - model leak
+  - LLM
+  - LLMs
+  - large language model
+  - AI review
+  - code review
+  - cargo-crev
+  - NHI
+  - NHIs
+  - API key
+  - API keys
+  - 모델 가중치
+  - 임베딩
+  - 벡터DB
+  - 추론 로그
+  - 프롬프트 로그
+  - 학습 데이터
 - name: SecurityGeneral
   display_name: 보안/개인정보 일반
   keywords:
@@ -280,7 +736,12 @@ entities:
   - mfa
   - password
   - credential
+  - API key
+  - API keys
   - access control
+  - lockdown mode
+  - remote code execution
+  - rce
   # 한국어 핵심 용어
   - 보안
   - 사이버보안

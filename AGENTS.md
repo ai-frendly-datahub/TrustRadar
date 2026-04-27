@@ -1,6 +1,6 @@
 # TRUSTRADAR
 
-기업 신뢰도, 평판, 소비자 만족도 정보를 수집하고 기업별 신뢰도 트렌드를 분석합니다.
+보안·개인정보·규제 집행·사고 공시 신호를 수집해 기업 trust/compliance risk를 분석합니다.
 
 ## STRUCTURE
 
@@ -34,18 +34,20 @@ TrustRadar/
 
 | Entity | Examples |
 |--------|----------|
-| 주요 엔티티 1 | 예시 1, 예시 2, 예시 3 |
-| 주요 엔티티 2 | 예시 4, 예시 5, 예시 6 |
-| 주요 엔티티 3 | 예시 7, 예시 8, 예시 9 |
+| Vulnerability / DataBreach | CVE, zero-day, ransomware, leaked |
+| IncidentDisclosure / ServiceOutage | breach notice, status page, 장애, 점검 |
+| EnforcementAction / Compliance | fine, settlement, consent order, 과징금 |
 
 ## DEVIATIONS FROM TEMPLATE
 
-- 표준 템플릿 대비 특화 기능 1
-- 표준 템플릿 대비 특화 기능 2
+- `javascript` 소스로 규제기관 공지와 집행 페이지를 수집한다.
+- taxonomy 기준으로 `공식 + 운영 + 커뮤니티` 레이어를 우선 유지한다.
+- browser collector 설정(`config`)을 실제 런타임에서 읽도록 확장했다.
 
 ## COMMANDS
 
 ```bash
 python main.py --category trust --recent-days 7
 python main.py --category trust --per-source-limit 50 --keep-days 90
+pip install 'radar-core[browser]'
 ```

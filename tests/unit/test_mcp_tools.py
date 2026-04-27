@@ -187,6 +187,74 @@ def test_handle_top_trends(tmp_path: Path) -> None:
     assert "1" in output
 
 
+def test_handle_quality_report(tmp_path: Path) -> None:
+    from mcp_server.tools import handle_quality_report
+    from trustradar.models import Article
+    from trustradar.storage import RadarStorage
+
+    db_path = tmp_path / "radar.duckdb"
+    now = datetime.now(UTC)
+    storage = RadarStorage(db_path)
+    try:
+        storage.upsert_articles(
+            [
+                Article(
+                    title="KISA breach notice",
+                    link="https://example.com/kisa",
+                    summary="The official notice disclosed a security incident.",
+                    published=now - timedelta(hours=2),
+                    collected_at=now,
+                    source="KISA 보안공지",
+                    category="trust",
+                    matched_entities={
+                        "IncidentStatus": ["disclosed"],
+                        "OperationalEvent": ["incident_disclosure"],
+                        "VerificationState": ["official_confirmed"],
+                    },
+                ),
+                Article(
+                    title="Privacy regulator consent order",
+                    link="https://example.com/pipc",
+                    summary="The regulator announced a penalty.",
+                    published=now - timedelta(hours=3),
+                    collected_at=now,
+                    source="PIPC 개인정보보호위원회",
+                    category="trust",
+                    matched_entities={
+                        "EnforcementOutcome": ["penalty"],
+                        "OperationalEvent": ["enforcement_action"],
+                        "VerificationState": ["official_confirmed"],
+                    },
+                ),
+                Article(
+                    title="Community reports an outage",
+                    link="https://example.com/community",
+                    summary="A status page outage is under discussion.",
+                    published=now - timedelta(hours=4),
+                    collected_at=now,
+                    source="Hacker News Security Community",
+                    category="trust",
+                    matched_entities={
+                        "IncidentStatus": ["outage"],
+                        "OperationalEvent": ["status_page_incident"],
+                        "VerificationState": ["official_confirmation_required"],
+                    },
+                ),
+            ]
+        )
+    finally:
+        storage.close()
+
+    output = handle_quality_report(db_path=db_path, category="trust", days=30, limit=20)
+    payload = json.loads(output)
+
+    assert payload["category"] == "trust"
+    assert payload["summary"]["incident_disclosure_events"] >= 1
+    assert payload["summary"]["enforcement_action_events"] >= 1
+    assert payload["summary"]["official_confirmation_required_events"] >= 1
+    assert "authoritative source confirms" in payload["verification_scope_note"]
+
+
 def test_handle_price_watch_stub() -> None:
     from mcp_server.tools import handle_price_watch
 
