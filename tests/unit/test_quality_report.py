@@ -181,6 +181,7 @@ def test_build_quality_report_tracks_trust_verification_statuses() -> None:
     assert report["summary"]["unique_service_count"] == 1
     assert report["summary"]["official_confirmation_required_service_count"] == 1
     assert report["summary"]["collection_error_count"] == 1
+    assert report["summary"]["daily_review_item_count"] == 5
     assert "official_confirmation_required" in report["verification_scope_note"]
 
     statuses = {row["source"]: row["status"] for row in report["sources"]}
@@ -209,6 +210,12 @@ def test_build_quality_report_tracks_trust_verification_statuses() -> None:
     )
     assert enforcement_event["enforcement_outcomes"] == ["penalty", "remediation"]
 
+    daily_reasons = [item["reason"] for item in report["daily_review_items"]]
+    assert "source_status_missing" in daily_reasons
+    assert "source_status_stale" in daily_reasons
+    assert "source_collection_error" in daily_reasons
+    assert daily_reasons.count("event_requires_official_confirmation") == 2
+
 
 def test_write_quality_report_writes_latest_and_dated_files(tmp_path) -> None:
     report = {
@@ -218,6 +225,7 @@ def test_write_quality_report_writes_latest_and_dated_files(tmp_path) -> None:
         "summary": {},
         "sources": [],
         "events": [],
+        "daily_review_items": [],
         "errors": [],
     }
 
@@ -235,7 +243,13 @@ def test_build_quality_report_excludes_disabled_sources_from_active_tracking() -
         category_name="trust",
         display_name="Trust",
         sources=[
-            _source("Enabled Official", "enforcement_action", 1),
+            _source(
+                "Enabled Official",
+                "enforcement_action",
+                1,
+                verification_role="official_action",
+                merge_policy="authoritative_source",
+            ),
             _source(
                 "Disabled Official",
                 "enforcement_action",
@@ -281,6 +295,7 @@ def test_build_quality_report_excludes_disabled_sources_from_active_tracking() -
     assert report["summary"]["fresh_sources"] == 1
     assert report["summary"]["skipped_disabled_sources"] == 1
     assert report["summary"]["enforcement_action_events"] == 1
+    assert report["summary"]["daily_review_item_count"] == 1
 
     disabled_row = next(row for row in report["sources"] if row["source"] == "Disabled Official")
     assert disabled_row["enabled"] is False
@@ -289,3 +304,53 @@ def test_build_quality_report_excludes_disabled_sources_from_active_tracking() -
     assert disabled_row["disabled_reason"] == "blocked_by_source"
     assert disabled_row["required_before_enable"] == ["parser_smoke"]
     assert all(row["source"] != "Disabled Official" for row in report["events"])
+    assert report["daily_review_items"] == [
+        {
+            "reason": "disabled_source_gate",
+            "source": "Disabled Official",
+            "event_model": "enforcement_action",
+            "disabled_reason": "blocked_by_source",
+            "required_before_enable": ["parser_smoke"],
+        }
+    ]
+
+
+def test_build_quality_report_can_use_wider_freshness_window_without_inflating_events() -> None:
+    now = datetime(2026, 4, 12, tzinfo=UTC)
+    category = CategoryConfig(
+        category_name="trust",
+        display_name="Trust",
+        sources=[
+            _source(
+                "Quiet Expert Blog",
+                "incident_disclosure",
+                5,
+                verification_role="corroborating_report",
+                merge_policy="requires_official_confirmation",
+            )
+        ],
+        entities=[],
+    )
+    old_article = Article(
+        title="Breach analysis from last week",
+        link="https://example.com/old",
+        summary="A data breach analysis was published last week.",
+        published=now - timedelta(days=7),
+        collected_at=now,
+        source="Quiet Expert Blog",
+        category="trust",
+        matched_entities={"OperationalEvent": ["incident_disclosure"]},
+    )
+
+    report = build_quality_report(
+        category=category,
+        articles=[],
+        freshness_articles=[old_article],
+        quality_config={},
+        generated_at=now,
+    )
+
+    assert report["summary"]["missing_sources"] == 0
+    assert report["summary"]["stale_sources"] == 1
+    assert report["summary"]["incident_disclosure_events"] == 0
+    assert report["sources"][0]["latest_title"] == "Breach analysis from last week"

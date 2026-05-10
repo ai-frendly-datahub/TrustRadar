@@ -50,6 +50,7 @@ def test_generate_report_injects_trust_quality_panel(tmp_path, monkeypatch) -> N
             "ai_asset_risk_events": 1,
             "unique_service_count": 1,
             "official_confirmation_required_events": 1,
+            "daily_review_item_count": 2,
         },
         "sources": [
             {
@@ -82,6 +83,21 @@ def test_generate_report_injects_trust_quality_panel(tmp_path, monkeypatch) -> N
                 "verification_role": "community_signal",
             },
         ],
+        "daily_review_items": [
+            {
+                "reason": "source_status_stale",
+                "source": "Missing Status",
+                "event_model": "status_page_incident",
+                "age_days": 3,
+            },
+            {
+                "reason": "event_requires_official_confirmation",
+                "source": "Hacker News Security Community",
+                "event_model": "status_page_incident",
+                "verification_state": "official_confirmation_required",
+                "title": "Community reports an outage",
+            },
+        ],
     }
 
     generate_report(
@@ -106,6 +122,8 @@ def test_generate_report_injects_trust_quality_panel(tmp_path, monkeypatch) -> N
         assert "service GitHub" in rendered
         assert "official_confirmation_required" in rendered
         assert "community_signal" in rendered
+        assert "Daily Review Items" in rendered
+        assert "event_requires_official_confirmation" in rendered
         assert rendered == "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n"
 
     summary = (tmp_path / "reports" / "trust_20260412_summary.json").read_text(

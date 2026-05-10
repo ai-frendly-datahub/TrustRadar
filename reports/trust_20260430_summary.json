@@ -1,0 +1,215 @@
+{
+  "date": "2026-04-30",
+  "category": "trust",
+  "article_count": 22,
+  "source_count": 9,
+  "matched_count": 22,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 27
+    },
+    {
+      "name": "Privacy",
+      "count": 9
+    },
+    {
+      "name": "Vulnerability",
+      "count": 4
+    },
+    {
+      "name": "OperationalEvent",
+      "count": 3
+    },
+    {
+      "name": "VerificationState",
+      "count": 3
+    },
+    {
+      "name": "AIAssetRisk",
+      "count": 3
+    },
+    {
+      "name": "Threat",
+      "count": 3
+    },
+    {
+      "name": "DataBreach",
+      "count": 2
+    },
+    {
+      "name": "EnforcementAction",
+      "count": 1
+    },
+    {
+      "name": "EnforcementOutcome",
+      "count": 1
+    },
+    {
+      "name": "Malware",
+      "count": 1
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 1
+    }
+  ],
+  "sources": {
+    "CIRCL CVE Feed": 3,
+    "PIPC 개인정보보호위원회": 10,
+    "KISA 보안공지": 3,
+    "Dark Reading": 1,
+    "Bleeping Computer": 1,
+    "CIRCL NVD Feed": 1,
+    "Hacker News Security Community": 1,
+    "The Hacker News": 1,
+    "Infosecurity Magazine": 1
+  },
+  "generated_at": "2026-04-30T11:40:15.184993+09:00",
+  "articles": [
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-6221"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12007"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12010"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12011"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12019"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12020"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12021"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12023"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12030"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12031"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12033"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3640&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3642&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3643&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.darkreading.com/cyber-risk/claude-mythos-startle-japans-financial-sector"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/security/official-sap-npm-packages-compromised-to-steal-credentials/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7418"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7416"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7409"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.theguardian.com/technology/2026/apr/29/maryland-grocery-stores-ban-surveillance-pricing"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://thehackernews.com/2026/04/sap-npm-packages-compromised-by-mini.html"
+      }
+    }
+  ],
+  "ontology": {
+    "repo": "TrustRadar",
+    "category": "trust",
+    "ontology_version": "0.1.0",
+    "event_model_ids": [
+      "trust.ai_asset_risk",
+      "trust.consumer_complaint",
+      "trust.editorial_coverage",
+      "trust.enforcement_action",
+      "trust.incident_disclosure",
+      "trust.regulatory_guidance",
+      "trust.status_page_incident"
+    ],
+    "event_model_mappings": {
+      "incident_disclosure": "trust.incident_disclosure",
+      "status_page_incident": "trust.status_page_incident",
+      "enforcement_action": "trust.enforcement_action",
+      "consumer_complaint": "trust.consumer_complaint",
+      "editorial_coverage": "trust.editorial_coverage",
+      "ai_asset_risk": "trust.ai_asset_risk",
+      "regulatory_guidance": "trust.regulatory_guidance"
+    },
+    "entity_type_hints": [
+      "security.incident",
+      "organization.agency"
+    ],
+    "source_role_ids": [
+      "context_only",
+      "verification_evidence"
+    ],
+    "source_role_mappings": {
+      "CIRCL NVD Feed": "verification_evidence",
+      "CFPB Newsroom": "context_only"
+    },
+    "evidence_policy_ids": [
+      "traceable_url_required",
+      "official_confirmation_required"
+    ]
+  }
+}

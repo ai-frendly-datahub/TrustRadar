@@ -1,0 +1,302 @@
+{
+  "date": "2026-04-29",
+  "category": "trust",
+  "article_count": 38,
+  "source_count": 10,
+  "matched_count": 38,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 55
+    },
+    {
+      "name": "Privacy",
+      "count": 10
+    },
+    {
+      "name": "Vulnerability",
+      "count": 10
+    },
+    {
+      "name": "Threat",
+      "count": 7
+    },
+    {
+      "name": "OperationalEvent",
+      "count": 6
+    },
+    {
+      "name": "VerificationState",
+      "count": 6
+    },
+    {
+      "name": "DataBreach",
+      "count": 6
+    },
+    {
+      "name": "Malware",
+      "count": 3
+    },
+    {
+      "name": "ServiceId",
+      "count": 2
+    },
+    {
+      "name": "AffectedService",
+      "count": 2
+    },
+    {
+      "name": "EnforcementAction",
+      "count": 1
+    },
+    {
+      "name": "EnforcementOutcome",
+      "count": 1
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 1
+    },
+    {
+      "name": "IncidentStatus",
+      "count": 1
+    },
+    {
+      "name": "Compliance",
+      "count": 1
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 1
+    }
+  ],
+  "sources": {
+    "PIPC 개인정보보호위원회": 10,
+    "KISA 보안공지": 4,
+    "CIRCL CVE Feed": 7,
+    "Dark Reading": 2,
+    "Bleeping Computer": 5,
+    "The Hacker News": 4,
+    "Information Security Stack Exchange": 1,
+    "Infosecurity Magazine": 3,
+    "Lobsters Security Community": 1,
+    "CIRCL NVD Feed": 1
+  },
+  "generated_at": "2026-04-29T11:32:33.327484+09:00",
+  "articles": [
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12004"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12007"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12010"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12011"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12019"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12020"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12021"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12023"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12030"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12031"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3640&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3642&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3643&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3633&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-40551"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7354"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.darkreading.com/cyberattacks-data-breaches/bluenoroff-turns-victims-into-new-attack-lures"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/security/broken-vect-20-ransomware-acts-as-a-data-wiper-for-large-files/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://thehackernews.com/2026/04/researchers-discover-critical-github.html"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://security.stackexchange.com/questions/286911/what-advantage-do-hardware-tamper-resistance-provide-in-hsm"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://thehackernews.com/2026/04/brazilian-lofygang-resurfaces-after.html"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/security/us-reportedly-charges-scattered-spider-hacker-arrested-in-finland/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.darkreading.com/application-security/fresh-glassworm-vs-code-extensions-supply-chain"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/security/checkmarx-confirms-lapsus-hackers-leaked-its-stolen-github-data/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://appsec.fyi/embed/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://thehackernews.com/2026/04/vect-20-ransomware-irreversibly.html"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7321"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7324"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7323"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7322"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7320"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-to-deprecate-legacy-tls-in-exchange-online-starting-july/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/security/inside-an-opsec-playbook-how-threat-actors-evade-detection/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-7269"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://thehackernews.com/2026/04/why-secure-data-movement-is-zero-trust.html"
+      }
+    }
+  ],
+  "ontology": {
+    "repo": "TrustRadar",
+    "category": "trust",
+    "ontology_version": "0.1.0",
+    "event_model_ids": [
+      "trust.ai_asset_risk",
+      "trust.consumer_complaint",
+      "trust.editorial_coverage",
+      "trust.enforcement_action",
+      "trust.incident_disclosure",
+      "trust.regulatory_guidance",
+      "trust.status_page_incident"
+    ],
+    "event_model_mappings": {
+      "incident_disclosure": "trust.incident_disclosure",
+      "status_page_incident": "trust.status_page_incident",
+      "enforcement_action": "trust.enforcement_action",
+      "consumer_complaint": "trust.consumer_complaint",
+      "editorial_coverage": "trust.editorial_coverage",
+      "ai_asset_risk": "trust.ai_asset_risk",
+      "regulatory_guidance": "trust.regulatory_guidance"
+    },
+    "entity_type_hints": [
+      "security.incident",
+      "organization.agency"
+    ],
+    "source_role_ids": [
+      "context_only",
+      "verification_evidence"
+    ],
+    "source_role_mappings": {
+      "CIRCL NVD Feed": "verification_evidence",
+      "CFPB Newsroom": "context_only"
+    },
+    "evidence_policy_ids": [
+      "traceable_url_required",
+      "official_confirmation_required"
+    ]
+  }
+}

@@ -170,6 +170,26 @@ sources:
 - name: Help Net Security
   type: rss
   url: https://www.helpnetsecurity.com/feed/
+  enabled: false
+  trust_tier: T2_professional
+  content_type: security_news
+  producer_role: security_media
+  collection_tier: C1_rss
+  info_purpose:
+  - incident_disclosure
+  - verification_signal
+  - market_report
+  notes: "DISABLED 2026-04-29: live feed returned HTTP 429 with Retry-After: 57600 and crawl-health already disabled this source in the local run. Re-enable only after consecutive live feed 200 checks and parser smoke pass."
+  config:
+    event_model: incident_disclosure
+    verification_role: corroborating_report
+    merge_policy: requires_official_confirmation
+    disabled_reason: helpnetsecurity_feed_rate_limited_429
+    required_before_enable:
+    - live_feed_200_two_consecutive_runs
+    - parser_smoke
+    - crawl_health_reset
+    freshness_sla_days: 2
 - name: Krebs on Security
   type: rss
   url: https://krebsonsecurity.com/feed/
@@ -181,12 +201,12 @@ sources:
   - incident_disclosure
   - verification_signal
   - breach_analysis
-  notes: High-signal breach analysis used as corroborating evidence until official disclosure is available; posting cadence is often every 4-5 days rather than daily.
+  notes: High-signal breach analysis used as corroborating evidence until official disclosure is available; audited 2026-04-30 as weekly security research cadence with occasional longer quiet windows.
   config:
     event_model: incident_disclosure
     verification_role: corroborating_report
     merge_policy: requires_official_confirmation
-    freshness_sla_days: 5
+    freshness_sla_days: 10
 - name: Infosecurity Magazine
   type: rss
   url: https://www.infosecurity-magazine.com/rss/news/
@@ -314,6 +334,7 @@ sources:
     verification_role: exploited_vulnerability_reference
     merge_policy: cross_reference_only
     freshness_sla_days: 3
+    min_fetch_entries: 20
 # NOTE: 2026-04-02 점검 - 404 오류로 비활성화
 # - name: ENISA News
 #   type: rss
@@ -393,12 +414,13 @@ sources:
   - community
   - incident
   - verification_signal
-  notes: Community discussion signal for breach, outage, and trust narratives that practitioners surface early; volume can stay quiet for 2-3 days between notable threads.
+  notes: Community discussion signal for breach, outage, and trust narratives that practitioners surface early; smoke runs inspect more than one front-page item because topic-scoped matches may not be the first RSS entry. Community incident signals can be bursty, so freshness is monitored on a two-week cadence and always requires official confirmation.
   config:
     event_model: incident_disclosure
     verification_role: community_signal
     merge_policy: requires_official_confirmation
-    freshness_sla_days: 3
+    freshness_sla_days: 14
+    min_fetch_entries: 30
     include_keywords: *trust_topic_keywords
 - name: Lobsters Security Community
   type: rss
@@ -411,12 +433,12 @@ sources:
   - community
   - incident
   - verification_signal
-  notes: Practitioner community signal for security incident and vulnerability cross-checking.
+  notes: Practitioner community signal for security incident and vulnerability cross-checking. Security-tag community evidence is bursty and is retained as corroboration only, so freshness is monitored on a two-week cadence.
   config:
     event_model: incident_disclosure
     verification_role: community_signal
     merge_policy: requires_official_confirmation
-    freshness_sla_days: 3
+    freshness_sla_days: 14
     include_keywords: *trust_topic_keywords
 - name: Information Security Stack Exchange
   type: rss
@@ -499,6 +521,7 @@ entities:
   - vulnerabilities
   - 취약점
   - CVE
+  - GHSA
   - exploit
   - zero-day
   - patch
@@ -669,6 +692,8 @@ entities:
   - large language model
   - AI review
   - code review
+  - AI model
+  - superhacker AI
   - cargo-crev
   - NHI
   - NHIs
@@ -686,6 +711,8 @@ entities:
   # 핵심 보안 용어
   - security
   - cybersecurity
+  - cyber risk
+  - cyber experts
   - information security
   - infosec
   - cyber attack
@@ -740,12 +767,30 @@ entities:
   - API keys
   - access control
   - lockdown mode
+  - TLS
+  - legacy TLS
+  - passkey
+  - passkeys
+  - FIDO
+  - secure messaging
+  - prompt injection
+  - ai agent
+  - AI agents
   - remote code execution
   - rce
+  - GHSA
   # 한국어 핵심 용어
   - 보안
   - 사이버보안
   - 정보보안
+  - 정보보호
+  - 정보보호제품
+  - 암호모듈
+  - 화이트해커
+  - 비밀번호
+  - IP카메라
+  - 사전적정성
+  - 사고 탐지
   - 해킹
   - 침해
   - 유출

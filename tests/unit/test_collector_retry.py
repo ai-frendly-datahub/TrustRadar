@@ -163,6 +163,40 @@ class TestCollectorRetryLogic:
         assert articles[0].title == "CVE-2025-15441"
         assert articles[0].summary == "CVE-2025-15441"
 
+    def test_source_min_fetch_entries_can_probe_past_first_scoped_item(self) -> None:
+        source = Source(
+            name="scoped_feed",
+            type="rss",
+            url="http://example.com/feed",
+            config={"include_keywords": ["security"], "min_fetch_entries": 3},
+        )
+
+        with patch("radar.collector.requests.get") as mock_get:
+            mock_response = Mock()
+            mock_response.content = b"""<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <item>
+            <title>General platform update</title>
+            <link>http://example.com/general</link>
+            <description>No scoped term here</description>
+            <pubDate>Mon, 01 Jan 2024 12:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title>Security incident disclosure</title>
+            <link>http://example.com/security</link>
+            <description>Security breach update</description>
+            <pubDate>Tue, 02 Jan 2024 12:00:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>"""
+            mock_response.raise_for_status = Mock()
+            mock_get.return_value = mock_response
+
+            articles = _collect_single(source, category="test", limit=1, timeout=15)
+
+        assert [article.title for article in articles] == ["Security incident disclosure"]
+
     def test_session_reuse(self) -> None:
         sources = [
             Source(name="feed_1", type="rss", url="http://host1.example.com/feed"),

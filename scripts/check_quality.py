@@ -23,6 +23,11 @@ from trustradar.config_loader import (  # noqa: E402
 )
 from trustradar.quality_report import build_quality_report, write_quality_report  # noqa: E402
 from trustradar.storage import RadarStorage  # noqa: E402
+from main import (  # noqa: E402
+    _filter_report_articles,
+    _quality_lookback_days,
+    _reanalyze_articles,
+)
 
 
 def _project_path(project_root: Path, raw_path: str | Path) -> Path:
@@ -100,16 +105,41 @@ def generate_quality_artifacts(
     quality_cfg = load_category_quality_config(category_name, categories_dir=categories_dir)
     lookback_days = _lookback_days(_latest_article_date(db_path, category_cfg.category_name))
 
+    freshness_lookback_days = _quality_lookback_days(
+        quality_cfg,
+        sources=category_cfg.sources,
+        minimum_days=lookback_days,
+    )
+    event_lookback_days = max(lookback_days, 14)
+
     with RadarStorage(db_path) as storage:
-        articles = storage.recent_articles(
-            category_cfg.category_name,
-            days=lookback_days,
-            limit=1000,
+        event_articles = _reanalyze_articles(
+            _filter_report_articles(
+                storage.recent_articles(
+                    category_cfg.category_name,
+                    days=event_lookback_days,
+                    limit=500,
+                ),
+                category_cfg.sources,
+            ),
+            category_cfg=category_cfg,
+        )
+        freshness_articles = _reanalyze_articles(
+            _filter_report_articles(
+                storage.recent_articles(
+                    category_cfg.category_name,
+                    days=freshness_lookback_days,
+                    limit=1000,
+                ),
+                category_cfg.sources,
+            ),
+            category_cfg=category_cfg,
         )
 
     report = build_quality_report(
         category=category_cfg,
-        articles=articles,
+        articles=event_articles,
+        freshness_articles=freshness_articles,
         errors=[],
         quality_config=quality_cfg,
     )

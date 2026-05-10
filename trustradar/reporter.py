@@ -154,6 +154,9 @@ def _build_trust_quality_section(quality_report: Mapping[str, Any]) -> dict[str,
     summary_map = summary if isinstance(summary, Mapping) else {}
     sources = [row for row in _list(quality_report.get("sources")) if isinstance(row, Mapping)]
     events = [row for row in _list(quality_report.get("events")) if isinstance(row, Mapping)]
+    daily_review_items = [
+        row for row in _list(quality_report.get("daily_review_items")) if isinstance(row, Mapping)
+    ]
     flagged_sources = [
         row
         for row in sources
@@ -171,6 +174,7 @@ def _build_trust_quality_section(quality_report: Mapping[str, Any]) -> dict[str,
         ("AI asset risks", summary_map.get("ai_asset_risk_events", 0)),
         ("services", summary_map.get("unique_service_count", 0)),
         ("needs official source", summary_map.get("official_confirmation_required_events", 0)),
+        ("daily review", summary_map.get("daily_review_item_count", len(daily_review_items))),
     ]
     chip_html = "\n".join(
         f'<span class="chip"><strong>{escape(label)}</strong> {escape(str(value))}</span>'
@@ -191,6 +195,9 @@ def _build_trust_quality_section(quality_report: Mapping[str, Any]) -> dict[str,
             "</div>"
             "<div><h3>Tracked Events</h3>"
             f"{_render_trust_events(highlighted_events)}"
+            "</div>"
+            "<div><h3>Daily Review Items</h3>"
+            f"{_render_daily_review_items(daily_review_items[:8])}"
             "</div>"
         ),
     }
@@ -223,6 +230,28 @@ def _render_trust_events(events: list[Mapping[str, Any]]) -> str:
         details = _event_details(event)
         items.append(f"<li><strong>{model}</strong> {title} ({source}){details}</li>")
     return "<ul>" + "\n".join(items) + "</ul>"
+
+
+def _render_daily_review_items(items: list[Mapping[str, Any]]) -> str:
+    if not items:
+        return '<p class="muted small">No daily review items in this run.</p>'
+
+    rendered: list[str] = []
+    for item in items:
+        reason = escape(str(item.get("reason", "")))
+        source = escape(str(item.get("source", "")))
+        model = escape(str(item.get("event_model", "")))
+        detail_values = []
+        for key in ("verification_state", "disabled_reason", "error"):
+            value = item.get(key)
+            if value:
+                detail_values.append(f"{escape(key)}={escape(str(value))}")
+        title = str(item.get("title") or "")
+        if title:
+            detail_values.append("title=" + escape(title[:100]))
+        detail_text = "" if not detail_values else ": " + "; ".join(detail_values)
+        rendered.append(f"<li><strong>{reason}</strong> {source} ({model}){detail_text}</li>")
+    return "<ul>" + "\n".join(rendered) + "</ul>"
 
 
 def _event_details(event: Mapping[str, Any]) -> str:

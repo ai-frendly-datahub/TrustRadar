@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from trustradar.analyzer import apply_entity_rules
 from trustradar.config_loader import load_category_config, load_category_quality_config
+from trustradar.models import Article
 
 
 def test_real_trust_config_exposes_data_quality_overlay() -> None:
@@ -53,9 +55,19 @@ def test_real_trust_sources_preserve_operational_metadata() -> None:
     hnews = sources["Hacker News Security Community"]
     assert hnews.trust_tier == "T4_community"
     assert hnews.config["merge_policy"] == "requires_official_confirmation"
+    assert hnews.config["min_fetch_entries"] == 30
+
+    circl_kev = sources["CIRCL KEV Feed"]
+    assert circl_kev.config["min_fetch_entries"] == 20
 
     sans = sources["SANS Internet Storm Center"]
     assert "include_keywords" in sans.config
+
+    helpnet = sources["Help Net Security"]
+    assert helpnet.enabled is False
+    assert helpnet.config["event_model"] == "incident_disclosure"
+    assert helpnet.config["disabled_reason"] == "helpnetsecurity_feed_rate_limited_429"
+    assert "live_feed_200_two_consecutive_runs" in helpnet.config["required_before_enable"]
 
     lobsters = sources["Lobsters Security Community"]
     assert "LLM" in lobsters.config["include_keywords"]
@@ -66,6 +78,7 @@ def test_real_trust_sources_preserve_operational_metadata() -> None:
     ai_asset_risk = next(entity for entity in config.entities if entity.name == "AIAssetRisk")
     assert "LLM" in ai_asset_risk.keywords
     assert "cargo-crev" in ai_asset_risk.keywords
+    assert "AI model" in ai_asset_risk.keywords
 
 
 def test_load_category_config_preserves_source_metadata(tmp_path) -> None:
@@ -110,3 +123,23 @@ entities: []
     assert source.info_purpose == ["enforcement", "complaint"]
     assert source.notes == "official privacy enforcement feed"
     assert source.config == {"wait_for": "main"}
+
+
+def test_real_trust_config_classifies_ai_model_cyber_risk() -> None:
+    config = load_category_config("trust")
+    article = Article(
+        title="Claude Mythos Fears Startle Japan's Financial Services Sector",
+        link="https://example.com/claude-mythos",
+        summary=(
+            "Global financial institutions are panicked over Anthropic's "
+            "new superhacker AI model. Cyber experts aren't quite as worried."
+        ),
+        published=None,
+        source="Dark Reading",
+        category="trust",
+    )
+
+    analyzed = apply_entity_rules([article], config.entities)
+
+    assert "AIAssetRisk" in analyzed[0].matched_entities
+    assert "SecurityGeneral" in analyzed[0].matched_entities

@@ -83,6 +83,22 @@ def collect_browser_sources(
             timeout=timeout,
             health_db_path=health_db_path,
         )
+        retry_sources = _sources_with_errors(source_dicts, errors)
+        if retry_sources:
+            retry_articles, retry_errors = _core_collect(
+                sources=retry_sources,
+                category=category,
+                timeout=timeout,
+                health_db_path=health_db_path,
+            )
+            retried_names = {str(source["name"]) for source in retry_sources}
+            core_articles.extend(retry_articles)
+            errors = [
+                error
+                for error in errors
+                if not _error_matches_any_source(error, retried_names)
+            ]
+            errors.extend(retry_errors)
     except ImportError:
         logger.warning(
             "playwright_not_installed",
@@ -122,3 +138,24 @@ def collect_browser_sources(
         )
 
     return local_articles, errors
+
+
+def _sources_with_errors(
+    source_dicts: list[dict[str, Any]],
+    errors: list[str],
+) -> list[dict[str, Any]]:
+    if not errors:
+        return []
+    return [
+        source
+        for source in source_dicts
+        if _error_matches_source(source_name=str(source["name"]), errors=errors)
+    ]
+
+
+def _error_matches_source(*, source_name: str, errors: list[str]) -> bool:
+    return any(error.startswith(f"{source_name}:") for error in errors)
+
+
+def _error_matches_any_source(error: str, source_names: set[str]) -> bool:
+    return any(error.startswith(f"{source_name}:") for source_name in source_names)

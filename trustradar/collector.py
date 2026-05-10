@@ -186,6 +186,19 @@ def _source_bool(source: Source, key: str) -> bool:
     return False
 
 
+def _source_entry_limit(source: Source, requested_limit: int) -> int:
+    raw_limit = source.config.get("min_fetch_entries")
+    if isinstance(raw_limit, bool):
+        return max(1, requested_limit)
+    if isinstance(raw_limit, int | float):
+        parsed = int(raw_limit)
+    elif isinstance(raw_limit, str) and raw_limit.strip().isdigit():
+        parsed = int(raw_limit.strip())
+    else:
+        parsed = 0
+    return max(1, requested_limit, parsed)
+
+
 def _config_string_list(config: Mapping[str, object], key: str) -> list[str]:
     raw = config.get(key)
     if isinstance(raw, str) and raw.strip():
@@ -405,7 +418,8 @@ def _collect_single(
     items: list[Article] = []
     entry_errors: int = 0
 
-    for idx, entry in enumerate(feed.entries[:limit]):
+    entry_limit = _source_entry_limit(source, limit)
+    for idx, entry in enumerate(feed.entries[:entry_limit]):
         try:
             # Validate feed entry has expected elements
             if not _validate_feed_entry(entry, source.name):
@@ -460,7 +474,7 @@ def _collect_single(
         logger.info(
             "feed_entry_errors_summary",
             source=source.name,
-            total_entries=min(limit, len(feed.entries)),
+            total_entries=min(entry_limit, len(feed.entries)),
             failed=entry_errors,
             collected=len(items),
         )

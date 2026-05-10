@@ -49,6 +49,8 @@ JavaScript/browser 소스를 제대로 수집하려면 `pip install 'radar-core[
 - `config/categories/trust.yaml`의 `data_quality`는 `incident_disclosure`, `status_page_incident`, `enforcement_action`, `consumer_complaint`, `ai_asset_risk` 이벤트를 분리합니다.
 - `trustradar.trust_signals`는 사고 상태, 집행 결과, AI 자산 리스크, 검증 상태를 `matched_entities`의 `IncidentStatus`, `EnforcementOutcome`, `AIAssetRisk`, `OperationalEvent`, `VerificationState`로 보강합니다.
 - 커뮤니티/시장 소스는 `requires_official_confirmation` 또는 `corroborating_report` 역할로만 병합하고, KISA/PIPC/FTC/CFPB/CIRCL 같은 공식 소스를 기준점으로 둡니다.
+- 리포트 생성 시 저장된 기존 기사도 현재 엔티티/운영 이벤트 규칙으로 재분석해, 오래된 `matched_entities`가 최신 품질 지표를 낮추지 않게 합니다.
+- 품질 리포트는 최신 이벤트 집계 창과 소스 freshness 판정 창을 분리합니다. 짧은 smoke 리포트에서도 quiet-window 소스를 `missing`으로 오판하지 않고 `fresh/stale/missing`을 구분합니다.
 - `source_backlog`의 vendor status page, breach notice portal, CFPB complaint 후보는 service id, incident permalink, 개인정보 비식별성, parser 검증 전까지 기본 비활성 후보로 둡니다.
 
 ## GitHub Actions & GitHub Pages

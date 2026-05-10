@@ -1,0 +1,204 @@
+{
+  "date": "2026-05-07",
+  "category": "trust",
+  "article_count": 23,
+  "source_count": 10,
+  "matched_count": 23,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 28
+    },
+    {
+      "name": "Privacy",
+      "count": 10
+    },
+    {
+      "name": "Threat",
+      "count": 5
+    },
+    {
+      "name": "Malware",
+      "count": 5
+    },
+    {
+      "name": "Vulnerability",
+      "count": 4
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 1
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 1
+    },
+    {
+      "name": "ServiceId",
+      "count": 1
+    },
+    {
+      "name": "AffectedService",
+      "count": 1
+    }
+  ],
+  "sources": {
+    "CIRCL CVE Feed": 2,
+    "PIPC 개인정보보호위원회": 10,
+    "KISA 보안공지": 3,
+    "CIRCL NVD Feed": 2,
+    "Bleeping Computer": 1,
+    "Dark Reading": 1,
+    "The Hacker News": 1,
+    "Information Security Stack Exchange": 1,
+    "Infosecurity Magazine": 1,
+    "Securelist - Kaspersky": 1
+  },
+  "generated_at": "2026-05-07T12:35:52.207963+09:00",
+  "articles": [
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/ghsa-j7w6-vpvq-j3gm"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12011"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12019"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12020"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12021"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12023"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12030"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12031"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12033"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12035"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=&nttId=12044"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3650&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3651&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.kisa.or.kr/401/form?postSeq=3656&page=1"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/ghsa-pgf8-2hgj-grqg"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-3291"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.bleepingcomputer.com/news/security/hackers-abuse-google-ads-for-godaddy-managewp-login-phishing/"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://www.darkreading.com/endpoint-security/yet-another-way-bypass-google-chromes-encryption-protection"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://vulnerability.circl.lu/vuln/cve-2026-40243"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://thehackernews.com/2026/05/mirai-based-xlabsv1-botnet-exploits-adb.html"
+      }
+    },
+    {
+      "event_model_payload": {
+        "source_url": "https://security.stackexchange.com/questions/286934/company-installing-trend-micro-vision-1-i-am-working-on-a-tunnel-guard-vpn-via"
+      }
+    }
+  ],
+  "ontology": {
+    "repo": "TrustRadar",
+    "category": "trust",
+    "ontology_version": "0.1.0",
+    "event_model_ids": [
+      "trust.ai_asset_risk",
+      "trust.consumer_complaint",
+      "trust.editorial_coverage",
+      "trust.enforcement_action",
+      "trust.incident_disclosure",
+      "trust.regulatory_guidance",
+      "trust.status_page_incident"
+    ],
+    "event_model_mappings": {
+      "incident_disclosure": "trust.incident_disclosure",
+      "status_page_incident": "trust.status_page_incident",
+      "enforcement_action": "trust.enforcement_action",
+      "consumer_complaint": "trust.consumer_complaint",
+      "editorial_coverage": "trust.editorial_coverage",
+      "ai_asset_risk": "trust.ai_asset_risk",
+      "regulatory_guidance": "trust.regulatory_guidance"
+    },
+    "entity_type_hints": [
+      "security.incident",
+      "organization.agency"
+    ],
+    "source_role_ids": [
+      "context_only",
+      "verification_evidence"
+    ],
+    "source_role_mappings": {
+      "CIRCL NVD Feed": "verification_evidence",
+      "CFPB Newsroom": "context_only"
+    },
+    "evidence_policy_ids": [
+      "traceable_url_required",
+      "official_confirmation_required"
+    ]
+  }
+}
