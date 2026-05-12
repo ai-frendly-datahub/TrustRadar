@@ -1,17 +1,17 @@
 {
   "date": "2026-05-13",
   "category": "trust",
-  "article_count": 200,
+  "article_count": 91,
   "source_count": 12,
-  "matched_count": 93,
+  "matched_count": 91,
   "top_entities": [
     {
       "name": "SecurityGeneral",
-      "count": 141
+      "count": 137
     },
     {
       "name": "Vulnerability",
-      "count": 39
+      "count": 38
     },
     {
       "name": "Threat",
@@ -19,7 +19,7 @@
     },
     {
       "name": "DataBreach",
-      "count": 23
+      "count": 22
     },
     {
       "name": "Malware",
@@ -43,18 +43,18 @@
     }
   ],
   "sources": {
-    "KISA 보안공지": 1,
-    "Bleeping Computer": 31,
-    "The Verge": 41,
-    "TechCrunch": 62,
-    "SANS Internet Storm Center": 7,
-    "The Hacker News": 23,
-    "Infosecurity Magazine": 16,
-    "Dark Reading": 9,
-    "Schneier on Security": 4,
-    "Securelist - Kaspersky": 2,
-    "Troy Hunt - Have I Been Pwned": 3,
-    "UK NCSC Blog": 1
+    "Bleeping Computer": 28,
+    "Krebs on Security": 1,
+    "Dark Reading": 6,
+    "SANS Internet Storm Center": 2,
+    "The Verge": 9,
+    "TechCrunch": 12,
+    "The Hacker News": 19,
+    "Infosecurity Magazine": 8,
+    "Schneier on Security": 3,
+    "Securelist - Kaspersky": 1,
+    "UK NCSC Blog": 1,
+    "Troy Hunt - Have I Been Pwned": 1
   },
-  "generated_at": "2026-05-13T05:29:11.014051+09:00"
+  "generated_at": "2026-05-13T08:48:30.576177+09:00"
 }
