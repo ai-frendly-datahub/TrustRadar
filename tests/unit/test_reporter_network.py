@@ -1,17 +1,8 @@
 from __future__ import annotations
 
-import pytest
-
 from trustradar import reporter
 
 
-_XFAIL_REASON = (
-    "trustradar.reporter does not yet expose build_entity_cooccurrence_graph "
-    "/ build_entity_network_html. Tracked as a follow-up feature."
-)
-
-
-@pytest.mark.xfail(reason=_XFAIL_REASON, strict=False)
 def test_build_entity_cooccurrence_graph_limits_top_nodes() -> None:
     entities_json = [
         {"Data Breach": ["breach"], "Credential Stuffing": ["stuffing"]},
@@ -29,14 +20,12 @@ def test_build_entity_cooccurrence_graph_limits_top_nodes() -> None:
     assert edge_counts == {("Credential Stuffing", "Data Breach"): 2}
 
 
-@pytest.mark.xfail(reason=_XFAIL_REASON, strict=False)
 def test_build_entity_network_html_returns_empty_state() -> None:
     html = reporter.build_entity_network_html([], include_plotlyjs=False)
 
     assert "Not enough co-occurrence data" in html
 
 
-@pytest.mark.xfail(reason=_XFAIL_REASON, strict=False)
 def test_build_entity_network_html_renders_plotly_markup() -> None:
     entities_json = [
         {"Data Breach": ["breach"], "Credential Stuffing": ["stuffing"]},

@@ -35,13 +35,6 @@ def _apply_entity_rules_py39(
     return analyzed
 
 
-@pytest.mark.xfail(
-    reason=(
-        "'Entity Co-occurrence Network' template section is not yet "
-        "implemented in trustradar/reporter or its template."
-    ),
-    strict=False,
-)
 @pytest.mark.integration
 def test_report_generation(
     tmp_path: Path,
