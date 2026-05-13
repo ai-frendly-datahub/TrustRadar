@@ -1,29 +1,33 @@
 {
   "date": "2026-05-13",
   "category": "trust",
-  "article_count": 91,
+  "article_count": 102,
   "source_count": 12,
-  "matched_count": 91,
+  "matched_count": 102,
   "top_entities": [
     {
       "name": "SecurityGeneral",
-      "count": 137
-    },
-    {
-      "name": "Vulnerability",
-      "count": 38
+      "count": 165
     },
     {
       "name": "Threat",
-      "count": 36
+      "count": 42
+    },
+    {
+      "name": "Vulnerability",
+      "count": 37
     },
     {
       "name": "DataBreach",
-      "count": 22
+      "count": 23
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 12
     },
     {
       "name": "Malware",
-      "count": 15
+      "count": 12
     },
     {
       "name": "ConsumerTrust",
@@ -31,30 +35,26 @@
     },
     {
       "name": "Privacy",
-      "count": 10
-    },
-    {
-      "name": "CorporateTrust",
-      "count": 9
+      "count": 11
     },
     {
       "name": "Compliance",
-      "count": 7
+      "count": 5
     }
   ],
   "sources": {
-    "Bleeping Computer": 28,
-    "Krebs on Security": 1,
-    "Dark Reading": 6,
+    "Dark Reading": 7,
+    "Bleeping Computer": 33,
+    "Infosecurity Magazine": 17,
+    "TechCrunch": 11,
+    "The Hacker News": 17,
+    "Schneier on Security": 2,
     "SANS Internet Storm Center": 2,
-    "The Verge": 9,
-    "TechCrunch": 12,
-    "The Hacker News": 19,
-    "Infosecurity Magazine": 8,
-    "Schneier on Security": 3,
-    "Securelist - Kaspersky": 1,
-    "UK NCSC Blog": 1,
-    "Troy Hunt - Have I Been Pwned": 1
+    "Security Now": 1,
+    "Krebs on Security": 2,
+    "The Verge": 7,
+    "Securelist - Kaspersky": 2,
+    "UK NCSC Blog": 1
   },
-  "generated_at": "2026-05-13T08:48:30.576177+09:00"
+  "generated_at": "2026-05-13T22:15:24.500225+09:00"
 }
