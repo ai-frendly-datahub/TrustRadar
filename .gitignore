@@ -178,12 +178,13 @@ reports/*.duckdb
 .sisyphus/
 data/raw/
 !data/raw/.gitkeep
-data/search_index.db
-data/search_index.db-wal
-data/search_index.db-shm
+data/search_index.db*
 reports/*.html
 !reports/.gitkeep
 docs/reports/*.html
 !docs/reports/.gitkeep
 data/*.duckdb
 !data/snapshots/**/*.duckdb
+
+# Large daily DuckDB snapshots (regenerable by daily crawler)
+data/daily/*.duckdb
