@@ -184,7 +184,37 @@ def generate_report(
         for article in articles_list
     ]
     network_html = build_entity_network_html(entities_json, include_plotlyjs=False)
+
+    # --- Incident category breakdown ---
+    from .incident_classifier import classify_articles
+
+    incident_counts = classify_articles(articles_list)
+    if incident_counts:
+        incident_rows = "".join(
+            f"<tr><td>{category}</td><td>{count}</td></tr>"
+            for category, count in sorted(
+                incident_counts.items(), key=lambda kv: kv[1], reverse=True
+            )
+        )
+        incident_html = (
+            '<table class="incident-breakdown">'
+            "<thead><tr><th>Category</th><th>Articles</th></tr></thead>"
+            f"<tbody>{incident_rows}</tbody>"
+            "</table>"
+        )
+    else:
+        incident_html = '<p class="incident-empty">No incident matches.</p>'
+
     extra_sections = [
+        {
+            "id": "incident-breakdown",
+            "aria_label": "Incident category breakdown",
+            "title": "Incident Category Breakdown",
+            "panel_title": "Incident Category Breakdown",
+            "subtitle": "Keyword-based classifier over title + summary",
+            "badges": [],
+            "body_html": f'<div class="incident-wrap">{incident_html}</div>',
+        },
         {
             "id": "entity-network",
             "aria_label": "Entity co-occurrence network",
@@ -193,7 +223,7 @@ def generate_report(
             "subtitle": "Entities that appear together in the same article",
             "badges": [],
             "body_html": f'<div class="network-wrap">{network_html}</div>',
-        }
+        },
     ]
 
     return _core_generate_report(
