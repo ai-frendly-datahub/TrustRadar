@@ -1,5 +1,55 @@
 category_name: trust
 display_name: 보안/개인정보 레이더
+data_quality:
+  priority: P0
+  primary_motion: compliance-risk
+  weakest_dimension: verification
+  quality_outputs:
+    freshness_report: reports/trust_quality.json
+    dated_freshness_report_pattern: reports/trust_YYYYMMDD_quality.json
+    tracked_event_models:
+    - vulnerability_disclosure
+    - data_breach_notice
+    - privacy_enforcement_action
+    - threat_intelligence_signal
+  event_models:
+    vulnerability_disclosure:
+      fields: [cve_id, vendor_or_product, severity, disclosure_date, source_url]
+      notes: CVE, KEV, exploit, and patch availability signals.
+    data_breach_notice:
+      fields: [organization, breach_type, affected_population, notice_date, source_url]
+      notes: Breach, leak, ransomware, and incident disclosure evidence.
+    privacy_enforcement_action:
+      fields: [regulator, organization, action_type, penalty_or_remedy, source_url]
+      notes: Privacy, security, consumer trust, and compliance enforcement actions.
+    threat_intelligence_signal:
+      fields: [actor_or_campaign, technique_or_malware, affected_sector, observed_at, source_url]
+      notes: Threat actor, malware, phishing, and supply-chain risk signals.
+  canonical_keys:
+    vulnerability: [cve_id, vendor_or_product]
+    breach: [organization, notice_date, breach_type]
+    enforcement: [regulator, organization, action_type]
+    threat: [actor_or_campaign, technique_or_malware, affected_sector]
+  freshness_sla:
+    vulnerability_disclosure_days: 1
+    data_breach_notice_days: 3
+    privacy_enforcement_action_days: 7
+    threat_intelligence_signal_days: 3
+  quality_gates:
+  - Keep CVE/KEV identifiers separate from editorial vulnerability coverage.
+  - Cross-check breach and enforcement claims against official or primary-source evidence before high-risk scoring.
+  - Preserve regulator, organization, affected population, and source URL for traceability.
+source_backlog:
+  official_candidates:
+  - id: cisa_kev_json
+    name: CISA KEV catalog JSON
+    activation_gate: primary-source availability, CVE canonicalization, and freshness smoke.
+  - id: pipc_enforcement_details
+    name: PIPC enforcement detail pages
+    activation_gate: Korean regulator parser and organization canonicalization.
+  - id: breach_notification_sources
+    name: State/regulator breach notification sources
+    activation_gate: jurisdiction taxonomy, affected-population parsing, and duplicate notice policy.
 sources:
 - name: TechCrunch
   type: rss

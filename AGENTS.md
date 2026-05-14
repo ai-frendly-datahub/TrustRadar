@@ -22,7 +22,7 @@ TrustRadar/
 │   └── mcp_server/               # MCP 서버 (server.py + tools.py)
 ├── config/
 │   ├── config.yaml               # database_path, report_dir, raw_data_dir, search_db_path
-│   └── categories/{domain}.yaml  # 소스 + 엔티티 정의
+│   └── categories/trust.yaml  # 소스 + 엔티티 정의
 ├── data/                         # DuckDB, search_index.db, raw/ JSONL
 ├── reports/                      # 생성된 HTML 리포트
 ├── tests/unit/                   # pytest 단위 테스트
@@ -34,14 +34,16 @@ TrustRadar/
 
 | Entity | Examples |
 |--------|----------|
-| 주요 엔티티 1 | 예시 1, 예시 2, 예시 3 |
-| 주요 엔티티 2 | 예시 4, 예시 5, 예시 6 |
-| 주요 엔티티 3 | 예시 7, 예시 8, 예시 9 |
+| Vulnerability | CVE, exploit, zero-day, 취약점 |
+| DataBreach | data breach, leaked, ransomware |
+| Malware | malware, trojan, botnet, 악성코드 |
+| Compliance | GDPR, CCPA, FTC, 규정 준수 |
 
 ## DEVIATIONS FROM TEMPLATE
 
-- 표준 템플릿 대비 특화 기능 1
-- 표준 템플릿 대비 특화 기능 2
+- 보안 사고, 개인정보, 위협 인텔리전스, 규제 준수 source를 분리해 추적한다.
+- CVE/KEV feed와 보안 뉴스는 incident evidence와 editorial context를 구분한다.
+- Reddit 등 cloud IP 차단 source는 CI 수집 대상에서 제외 상태를 유지한다.
 
 ## COMMANDS
 
