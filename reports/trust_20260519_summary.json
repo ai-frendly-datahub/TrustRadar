@@ -7,7 +7,7 @@
   "top_entities": [
     {
       "name": "SecurityGeneral",
-      "count": 171
+      "count": 172
     },
     {
       "name": "Vulnerability",
@@ -19,7 +19,7 @@
     },
     {
       "name": "DataBreach",
-      "count": 22
+      "count": 23
     },
     {
       "name": "Malware",
@@ -43,11 +43,11 @@
     }
   ],
   "sources": {
+    "Dark Reading": 18,
     "Infosecurity Magazine": 13,
-    "The Hacker News": 32,
+    "The Hacker News": 31,
     "Bleeping Computer": 23,
     "TechCrunch": 11,
-    "Dark Reading": 17,
     "Krebs on Security": 1,
     "The Verge": 3,
     "SANS Internet Storm Center": 3,
@@ -55,5 +55,5 @@
     "Schneier on Security": 4,
     "CIRCL KEV Feed": 2
   },
-  "generated_at": "2026-05-19T22:28:03.964646+09:00"
+  "generated_at": "2026-05-19T22:56:05.772221+09:00"
 }
