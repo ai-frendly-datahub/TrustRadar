@@ -1,0 +1,59 @@
+{
+  "date": "2026-06-05",
+  "category": "trust",
+  "article_count": 100,
+  "source_count": 11,
+  "matched_count": 100,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 137
+    },
+    {
+      "name": "Vulnerability",
+      "count": 41
+    },
+    {
+      "name": "Threat",
+      "count": 37
+    },
+    {
+      "name": "Malware",
+      "count": 18
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 15
+    },
+    {
+      "name": "DataBreach",
+      "count": 11
+    },
+    {
+      "name": "Privacy",
+      "count": 6
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 5
+    },
+    {
+      "name": "Compliance",
+      "count": 5
+    }
+  ],
+  "sources": {
+    "Schneier on Security": 2,
+    "Dark Reading": 11,
+    "The Hacker News": 26,
+    "Infosecurity Magazine": 17,
+    "Bleeping Computer": 20,
+    "TechCrunch": 12,
+    "The Verge": 8,
+    "UK NCSC Blog": 1,
+    "Securelist - Kaspersky": 1,
+    "Security Now": 1,
+    "CIRCL KEV Feed": 1
+  },
+  "generated_at": "2026-06-05T22:52:01.444250+09:00"
+}
