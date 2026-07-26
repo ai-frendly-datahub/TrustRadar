@@ -1,0 +1,57 @@
+{
+  "date": "2026-07-26",
+  "category": "trust",
+  "article_count": 99,
+  "source_count": 9,
+  "matched_count": 99,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 154
+    },
+    {
+      "name": "DataBreach",
+      "count": 31
+    },
+    {
+      "name": "Threat",
+      "count": 31
+    },
+    {
+      "name": "Vulnerability",
+      "count": 31
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 21
+    },
+    {
+      "name": "Malware",
+      "count": 10
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 9
+    },
+    {
+      "name": "Privacy",
+      "count": 8
+    },
+    {
+      "name": "Compliance",
+      "count": 6
+    }
+  ],
+  "sources": {
+    "Troy Hunt - Have I Been Pwned": 1,
+    "TechCrunch": 17,
+    "The Hacker News": 31,
+    "Bleeping Computer": 27,
+    "The Verge": 7,
+    "Schneier on Security": 3,
+    "Infosecurity Magazine": 10,
+    "SANS Internet Storm Center": 2,
+    "UK NCSC Blog": 1
+  },
+  "generated_at": "2026-07-26T21:02:01.730984+09:00"
+}
