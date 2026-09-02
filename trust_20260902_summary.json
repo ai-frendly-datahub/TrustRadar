@@ -1,58 +1,61 @@
 {
   "date": "2026-09-02",
   "category": "trust",
-  "article_count": 83,
-  "source_count": 10,
-  "matched_count": 83,
+  "article_count": 85,
+  "source_count": 13,
+  "matched_count": 85,
   "top_entities": [
     {
       "name": "SecurityGeneral",
-      "count": 116
+      "count": 119
     },
     {
       "name": "Vulnerability",
-      "count": 29
+      "count": 32
     },
     {
       "name": "Threat",
-      "count": 27
+      "count": 32
     },
     {
       "name": "DataBreach",
+      "count": 16
+    },
+    {
+      "name": "Malware",
       "count": 15
     },
     {
       "name": "ConsumerTrust",
-      "count": 11
+      "count": 12
     },
     {
-      "name": "CorporateTrust",
+      "name": "Compliance",
       "count": 10
     },
     {
-      "name": "Malware",
+      "name": "CorporateTrust",
       "count": 9
     },
     {
       "name": "Privacy",
-      "count": 7
-    },
-    {
-      "name": "Compliance",
-      "count": 7
+      "count": 4
     }
   ],
   "sources": {
-    "TechCrunch": 10,
-    "Bleeping Computer": 24,
+    "TechCrunch": 8,
+    "The Verge": 6,
     "The Hacker News": 28,
-    "Infosecurity Magazine": 4,
+    "Bleeping Computer": 25,
+    "Infosecurity Magazine": 5,
+    "Security Now": 1,
+    "Krebs on Security": 1,
+    "Troy Hunt - Have I Been Pwned": 1,
+    "SANS Internet Storm Center": 1,
+    "Schneier on Security": 4,
     "Securelist - Kaspersky": 2,
     "Darknet Diaries": 1,
-    "SANS Internet Storm Center": 2,
-    "Schneier on Security": 2,
-    "The Verge": 8,
     "CIRCL KEV Feed": 2
   },
-  "generated_at": "2026-09-02T00:23:55.687674+09:00"
+  "generated_at": "2026-09-02T23:59:31.327066+09:00"
 }
