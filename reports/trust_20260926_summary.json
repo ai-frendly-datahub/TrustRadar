@@ -1,0 +1,58 @@
+{
+  "date": "2026-09-26",
+  "category": "trust",
+  "article_count": 98,
+  "source_count": 10,
+  "matched_count": 98,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 156
+    },
+    {
+      "name": "Vulnerability",
+      "count": 57
+    },
+    {
+      "name": "Threat",
+      "count": 35
+    },
+    {
+      "name": "Malware",
+      "count": 18
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 17
+    },
+    {
+      "name": "DataBreach",
+      "count": 17
+    },
+    {
+      "name": "Compliance",
+      "count": 7
+    },
+    {
+      "name": "Privacy",
+      "count": 5
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 3
+    }
+  ],
+  "sources": {
+    "The Verge": 10,
+    "Bleeping Computer": 27,
+    "SANS Internet Storm Center": 2,
+    "Infosecurity Magazine": 11,
+    "The Hacker News": 31,
+    "Schneier on Security": 3,
+    "TechCrunch": 6,
+    "CIRCL KEV Feed": 6,
+    "Troy Hunt - Have I Been Pwned": 1,
+    "Security Now": 1
+  },
+  "generated_at": "2026-09-26T00:44:30.641875+09:00"
+}
