@@ -1,60 +1,59 @@
 {
   "date": "2026-10-24",
   "category": "trust",
-  "article_count": 131,
-  "source_count": 12,
-  "matched_count": 131,
+  "article_count": 126,
+  "source_count": 11,
+  "matched_count": 126,
   "top_entities": [
     {
       "name": "SecurityGeneral",
-      "count": 191
+      "count": 196
     },
     {
       "name": "Vulnerability",
-      "count": 79
+      "count": 83
     },
     {
       "name": "Threat",
-      "count": 35
+      "count": 33
     },
     {
       "name": "Malware",
-      "count": 29
-    },
-    {
-      "name": "ConsumerTrust",
-      "count": 25
+      "count": 31
     },
     {
       "name": "DataBreach",
       "count": 23
     },
     {
+      "name": "ConsumerTrust",
+      "count": 22
+    },
+    {
       "name": "Compliance",
-      "count": 7
+      "count": 10
     },
     {
       "name": "CorporateTrust",
-      "count": 7
+      "count": 9
     },
     {
       "name": "Privacy",
-      "count": 3
+      "count": 4
     }
   ],
   "sources": {
     "CIRCL CVE Feed": 19,
-    "Bleeping Computer": 18,
-    "The Verge": 9,
-    "TechCrunch": 8,
-    "The Hacker News": 30,
-    "SANS Internet Storm Center": 2,
-    "Infosecurity Magazine": 14,
+    "The Verge": 8,
+    "The Hacker News": 28,
     "Schneier on Security": 3,
-    "CIRCL NVD Feed": 4,
-    "CIRCL KEV Feed": 21,
-    "Securelist - Kaspersky": 2,
-    "UK NCSC Blog": 1
+    "Bleeping Computer": 19,
+    "SANS Internet Storm Center": 3,
+    "TechCrunch": 8,
+    "Infosecurity Magazine": 8,
+    "CIRCL KEV Feed": 26,
+    "CIRCL NVD Feed": 3,
+    "Securelist - Kaspersky": 1
   },
-  "generated_at": "2026-10-24T00:38:34.571748+09:00"
+  "generated_at": "2026-10-24T23:15:35.355021+09:00"
 }
