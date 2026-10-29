@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta, tzinfo
 from pathlib import Path
+from typing import Self, cast
+
+import pytest
+from radar_core.dates import daily_partition_date
 
 
 def test_snapshot_database_creates_file(tmp_path: Path) -> None:
@@ -14,7 +18,7 @@ def test_snapshot_database_creates_file(tmp_path: Path) -> None:
 
     assert result is not None
     assert result.exists()
-    today_iso = datetime.now(UTC).date().isoformat()
+    today_iso = daily_partition_date().isoformat()
     assert result.name == f"{today_iso}.duckdb"
     assert result.parent == tmp_path / "daily"
     assert result.read_text() == "fake-db-content"
@@ -150,7 +154,7 @@ def test_storage_create_daily_snapshot(tmp_path: Path) -> None:
 
         assert result is not None
         assert result.exists()
-        today_iso = datetime.now(UTC).date().isoformat()
+        today_iso = daily_partition_date().isoformat()
         assert result.name == f"{today_iso}.duckdb"
         assert result.parent == db_path.parent / "daily"
     finally:
@@ -191,3 +195,26 @@ def test_storage_cleanup_old_snapshots(tmp_path: Path) -> None:
         assert not old_dir.exists()
     finally:
         storage.close()
+
+
+def test_snapshot_database_uses_kst_date_across_utc_midnight(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from trustradar.date_storage import snapshot_database
+
+    fixed = datetime(2026, 10, 29, 16, 0, tzinfo=UTC)
+
+    class _FixedDateTime(datetime):
+        @classmethod
+        def now(cls, tz: tzinfo | None = None) -> Self:
+            return cast(Self, fixed)
+
+    monkeypatch.setattr("radar_core.dates.datetime", _FixedDateTime)
+    db_file = tmp_path / "radar_data.duckdb"
+    db_file.write_text("fake-db")
+
+    result = snapshot_database(db_file)
+
+    assert result is not None
+    # 2026-10-29 16:00 UTC is 2026-10-30 in Asia/Seoul.
+    assert result.name == "2026-10-30.duckdb"

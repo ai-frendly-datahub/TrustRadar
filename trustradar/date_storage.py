@@ -4,6 +4,8 @@ import shutil
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
+from radar_core.dates import daily_partition_date
+
 
 def snapshot_database(
     db_path: Path,
@@ -15,7 +17,7 @@ def snapshot_database(
         return None
 
     if snapshot_date is None:
-        snapshot_date = datetime.now(UTC).date()
+        snapshot_date = daily_partition_date()
 
     if snapshot_root is None:
         snapshot_root = db_path.parent / "daily"
@@ -29,7 +31,7 @@ def snapshot_database(
 
 def cleanup_date_directories(base_dir: Path, *, keep_days: int, today: date | None = None) -> int:
     if today is None:
-        today = datetime.now(UTC).date()
+        today = daily_partition_date()
 
     cutoff = today - timedelta(days=keep_days)
     removed = 0
@@ -57,7 +59,7 @@ def cleanup_date_directories(base_dir: Path, *, keep_days: int, today: date | No
 
 def cleanup_dated_reports(report_dir: Path, *, keep_days: int, today: date | None = None) -> int:
     if today is None:
-        today = datetime.now(UTC).date()
+        today = daily_partition_date()
 
     cutoff = today - timedelta(days=keep_days)
     removed = 0
@@ -79,17 +81,13 @@ def cleanup_dated_reports(report_dir: Path, *, keep_days: int, today: date | Non
     return removed
 
 
-
-
-def cleanup_daily_snapshots(
-    daily_dir: Path, *, keep_days: int, today: date | None = None
-) -> int:
+def cleanup_daily_snapshots(daily_dir: Path, *, keep_days: int, today: date | None = None) -> int:
     if keep_days < 0 or not daily_dir.exists():
         return 0
-    cutoff = (today or datetime.now(UTC).date()) - timedelta(days=keep_days)
+    cutoff = (today or daily_partition_date()) - timedelta(days=keep_days)
     removed = 0
     for item in daily_dir.iterdir():
-        if not item.is_file() or not item.name.endswith('.duckdb'):
+        if not item.is_file() or not item.name.endswith(".duckdb"):
             continue
         try:
             stamp = date.fromisoformat(item.stem)
@@ -99,6 +97,7 @@ def cleanup_daily_snapshots(
             item.unlink()
             removed += 1
     return removed
+
 
 def apply_date_storage_policy(
     *,
@@ -114,7 +113,9 @@ def apply_date_storage_policy(
     snapshot_path = snapshot_database(database_path) if snapshot_db else None
     raw_removed = cleanup_date_directories(raw_data_dir, keep_days=keep_raw_days)
     report_removed = cleanup_dated_reports(report_dir, keep_days=keep_report_days)
-    daily_removed = cleanup_daily_snapshots(database_path.parent / "daily", keep_days=keep_daily_days)
+    daily_removed = cleanup_daily_snapshots(
+        database_path.parent / "daily", keep_days=keep_daily_days
+    )
     return {
         "snapshot_path": str(snapshot_path) if snapshot_path is not None else None,
         "raw_removed": raw_removed,

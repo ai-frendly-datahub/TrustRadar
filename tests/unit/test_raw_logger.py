@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, tzinfo
 from pathlib import Path
-from typing import cast
+from typing import Self, cast
+
+import pytest
+from radar_core.dates import daily_partition_date
 
 from trustradar.models import Article
 from trustradar.raw_logger import RawLogger
@@ -27,9 +30,26 @@ def test_log_creates_yyyy_mm_dd_directory_and_jsonl_file(tmp_path: Path) -> None
 
     output_path = logger.log([article], source_name="MySource")
 
-    assert output_path.parent.name == datetime.now(UTC).date().isoformat()
+    assert output_path.parent.name == daily_partition_date().isoformat()
     assert output_path.name == "MySource.jsonl"
     assert output_path.exists()
+
+
+def test_log_directory_uses_kst_date_across_utc_midnight(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixed = datetime(2026, 10, 29, 16, 0, tzinfo=UTC)
+
+    class _FixedDateTime(datetime):
+        @classmethod
+        def now(cls, tz: tzinfo | None = None) -> Self:
+            return cast(Self, fixed)
+
+    monkeypatch.setattr("trustradar.raw_logger.datetime", _FixedDateTime)
+    output_path = RawLogger(tmp_path).log([_make_article()], source_name="MySource")
+
+    # 2026-10-29 16:00 UTC is 2026-10-30 in Asia/Seoul.
+    assert output_path.parent.name == "2026-10-30"
 
 
 def test_log_writes_valid_json_per_line(tmp_path: Path) -> None:
