@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-18",
+  "category": "trust",
+  "article_count": 118,
+  "source_count": 12,
+  "matched_count": 118,
+  "top_entities": [
+    {
+      "name": "SecurityGeneral",
+      "count": 188
+    },
+    {
+      "name": "Vulnerability",
+      "count": 92
+    },
+    {
+      "name": "Threat",
+      "count": 26
+    },
+    {
+      "name": "DataBreach",
+      "count": 19
+    },
+    {
+      "name": "Malware",
+      "count": 17
+    },
+    {
+      "name": "ConsumerTrust",
+      "count": 16
+    },
+    {
+      "name": "CorporateTrust",
+      "count": 10
+    },
+    {
+      "name": "Compliance",
+      "count": 7
+    },
+    {
+      "name": "Privacy",
+      "count": 4
+    }
+  ],
+  "sources": {
+    "CIRCL CVE Feed": 28,
+    "TechCrunch": 11,
+    "Bleeping Computer": 20,
+    "The Verge": 5,
+    "The Hacker News": 17,
+    "Infosecurity Magazine": 7,
+    "UK NCSC Blog": 1,
+    "SANS Internet Storm Center": 2,
+    "CIRCL KEV Feed": 22,
+    "CIRCL NVD Feed": 3,
+    "Schneier on Security": 1,
+    "Securelist - Kaspersky": 1
+  },
+  "generated_at": "2026-11-17T19:36:08.414160+00:00"
+}
